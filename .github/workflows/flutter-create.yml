@@ -1,0 +1,49 @@
+name: Flutter Create Project
+
+on:
+  workflow_dispatch:
+    inputs:
+      project_name:
+        description: "Flutter project name"
+        required: true
+        default: "superior_app"
+
+jobs:
+  flutter-create:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: stable
+
+      - name: Check if project already exists
+        run: |
+          if [ -d "${{ github.event.inputs.project_name }}" ]; then
+            echo "Project already exists. Exiting."
+            exit 1
+          fi
+
+      - name: Run flutter create
+        run: |
+          flutter create ${{ github.event.inputs.project_name }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+
+      - name: Commit flutter project
+        run: |
+          git add ${{ github.event.inputs.project_name }}
+          git commit -m "chore: flutter create ${{ github.event.inputs.project_name }}"
+
+      - name: Push to repository
+        run: |
+          git push origin HEAD
