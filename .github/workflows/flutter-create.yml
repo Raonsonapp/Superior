@@ -15,18 +15,20 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          persist-credentials: true
 
-      - name: Setup Flutter
+      - name: Setup Flutter (FIXED)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: stable
+          channel: stable   # ← ИН ҶО ХАТО БУД
+          cache: true
+
+      - name: Verify Flutter
+        run: flutter --version
 
       - name: Check if project already exists
         run: |
           if [ -d "${{ github.event.inputs.project_name }}" ]; then
-            echo "Project already exists. Exiting."
+            echo "Project already exists."
             exit 1
           fi
 
@@ -46,4 +48,4 @@ jobs:
 
       - name: Push to repository
         run: |
-          git push origin HEAD
+          git push
