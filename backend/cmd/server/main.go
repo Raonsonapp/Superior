@@ -2,33 +2,47 @@ package main
 
 import (
 	"log"
-	"net/http"
 	"os"
 
-	"github.com/Raonsonapp/Superior/backend/internal/api"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+
+	"github.com/Raonsonapp/Superior/backend/internal/api"
 )
 
 func main() {
 
+	// Load .env
+	_ = godotenv.Load()
+
+	// Release Mode
+	gin.SetMode(gin.ReleaseMode)
+
 	router := gin.Default()
 
+	// Health Check
 	router.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
+		c.JSON(200, gin.H{
 			"name":    "Superior AI",
 			"version": "1.0.0",
 			"status":  "running",
 		})
 	})
 
-	router.POST("/chat", api.Chat)
+	// API
+	api.Register(router)
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 
-	log.Println("Superior AI started on port", port)
+	log.Println("===================================")
+	log.Println("🚀 Superior AI Started")
+	log.Println("Port:", port)
+	log.Println("===================================")
 
-	router.Run(":" + port)
+	if err := router.Run(":" + port); err != nil {
+		log.Fatal(err)
+	}
 }
