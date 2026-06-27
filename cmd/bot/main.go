@@ -1,29 +1,15 @@
 package main
 
 import (
+	"context"
+	"crypto/tls"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
 	"time"
 )
-
-func check(url string) {
-	log.Println("Checking:", url)
-
-	client := &http.Client{
-		Timeout: 10 * time.Second,
-	}
-
-	resp, err := client.Get(url)
-	if err != nil {
-		log.Println("FAILED:", url, err)
-		return
-	}
-	defer resp.Body.Close()
-
-	log.Println("SUCCESS:", url, resp.Status)
-}
 
 func main() {
 	port := os.Getenv("PORT")
@@ -35,17 +21,34 @@ func main() {
 		fmt.Fprintln(w, "Superior Bot Running 🚀")
 	})
 
-	go func() {
-		log.Println("Server started on :" + port)
-		log.Fatal(http.ListenAndServe(":"+port, nil))
-	}()
+	go http.ListenAndServe(":"+port, nil)
 
-	time.Sleep(3 * time.Second)
+	time.Sleep(2 * time.Second)
 
-	check("https://google.com")
-	check("https://huggingface.co")
-	check("https://core.telegram.org")
-	check("https://api.telegram.org:443")
+	dialer := &net.Dialer{
+		Timeout: 10 * time.Second,
+	}
+
+	client := &http.Client{
+		Timeout: 15 * time.Second,
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				MinVersion: tls.VersionTLS12,
+			},
+			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+				// Танҳо IPv4
+				return dialer.DialContext(ctx, "tcp4", addr)
+			},
+		},
+	}
+
+	resp, err := client.Get("https://api.telegram.org")
+	if err != nil {
+		log.Println("FAILED:", err)
+	} else {
+		log.Println("SUCCESS:", resp.Status)
+		resp.Body.Close()
+	}
 
 	select {}
 }
