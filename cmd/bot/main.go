@@ -44,8 +44,8 @@ func main() {
 
 	check("https://google.com")
 	check("https://huggingface.co")
-	check("https://api.telegram.org")
-	check("https://149.154.167.220")
+	check("https://core.telegram.org")
+	check("https://api.telegram.org:443")
 
 	select {}
 }
