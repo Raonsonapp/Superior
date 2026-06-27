@@ -9,18 +9,20 @@ import (
 )
 
 func check(url string) {
+	log.Println("Checking:", url)
+
 	client := &http.Client{
-		Timeout: 20 * time.Second,
+		Timeout: 10 * time.Second,
 	}
 
 	resp, err := client.Get(url)
 	if err != nil {
-		log.Println(url, "❌", err)
+		log.Println("FAILED:", url, err)
 		return
 	}
 	defer resp.Body.Close()
 
-	log.Println(url, "✅", resp.Status)
+	log.Println("SUCCESS:", url, resp.Status)
 }
 
 func main() {
@@ -43,7 +45,7 @@ func main() {
 	check("https://google.com")
 	check("https://huggingface.co")
 	check("https://api.telegram.org")
-	check("https://api.github.com")
+	check("https://149.154.167.220")
 
 	select {}
 }
