@@ -6,11 +6,10 @@ import (
 	"net/http"
 	"os"
 	"time"
-
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func main() {
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "7860"
@@ -21,41 +20,23 @@ func main() {
 	})
 
 	go func() {
-		log.Println("HTTP server started on :" + port)
-		if err := http.ListenAndServe(":"+port, nil); err != nil {
-			log.Fatal(err)
-		}
+		log.Println(http.ListenAndServe(":"+port, nil))
 	}()
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(3 * time.Second)
 
-	token := os.Getenv("BOT_TOKEN")
-	if token == "" {
-		log.Println("BOT_TOKEN missing")
-		select {}
+	client := &http.Client{
+		Timeout: 20 * time.Second,
 	}
 
-	bot, err := tgbotapi.NewBotAPI(token)
+	resp, err := client.Get("https://api.telegram.org")
+
 	if err != nil {
-		log.Println("Telegram connection failed:", err)
-
-		// Серверро зинда нигоҳ медорад
-		select {}
+		log.Println("ERROR:", err)
+	} else {
+		log.Println("STATUS:", resp.Status)
+		resp.Body.Close()
 	}
 
-	log.Println("Connected:", bot.Self.UserName)
-
-	u := tgbotapi.NewUpdate(0)
-	u.Timeout = 60
-
-	updates := bot.GetUpdatesChan(u)
-
-	for update := range updates {
-		if update.Message == nil {
-			continue
-		}
-
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Салом 👋 Superior AI фаъол аст.")
-		bot.Send(msg)
-	}
+	select {}
 }
