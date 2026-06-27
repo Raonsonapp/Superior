@@ -20,13 +20,12 @@ func main() {
 
 	qwen = ai.NewQwenClient()
 
-	// Gin REST API
 	go startAPIServer()
 
-	// Telegram Bot
 	token := os.Getenv("BOT_TOKEN")
 	if token == "" {
-		log.Fatal("BOT_TOKEN не муқаррар шудааст")
+		log.Println("⚠️  BOT_TOKEN нест — фақат API server кор мекунад")
+		select {} // block forever
 	}
 
 	bot, err := tgbotapi.NewBotAPI(token)
@@ -56,61 +55,47 @@ func handleMessage(bot *tgbotapi.BotAPI, msg *tgbotapi.Message) {
 	case text == "/start":
 		sendMenu(bot, chatID)
 
-	case text == "/chat":
-		reply(bot, chatID, "💬 Паёми худро бифрист. Ман ба он ҷавоб хоҳам дод.\n\nМисол: Салом, чӣ хел ҳастӣ?")
-
-	case text == "/translate":
-		reply(bot, chatID, "🌐 Барои тарҷума форматро истифода бур:\n\n`/tr_ru Матни шумо` — ба Русӣ\n`/tr_en Матни шумо` — ба Англисӣ\n`/tr_tg Your text` — ба Тоҷикӣ")
-
-	case text == "/summarize":
-		reply(bot, chatID, "📝 Матнеро ки мехоҳед хулоса кунед бифрист бо /sum дар аввал:\n\n`/sum Матни дароз...`")
-
 	case strings.HasPrefix(text, "/tr_ru "):
-		textToTranslate := strings.TrimPrefix(text, "/tr_ru ")
+		t := strings.TrimPrefix(text, "/tr_ru ")
 		processAI(bot, chatID, func() (string, error) {
-			return qwen.Translate(textToTranslate, "ru")
+			return qwen.Translate(t, "ru")
 		}, "🌐 Тарҷума (Русӣ):")
 
 	case strings.HasPrefix(text, "/tr_en "):
-		textToTranslate := strings.TrimPrefix(text, "/tr_en ")
+		t := strings.TrimPrefix(text, "/tr_en ")
 		processAI(bot, chatID, func() (string, error) {
-			return qwen.Translate(textToTranslate, "en")
+			return qwen.Translate(t, "en")
 		}, "🌐 Translation (English):")
 
 	case strings.HasPrefix(text, "/tr_tg "):
-		textToTranslate := strings.TrimPrefix(text, "/tr_tg ")
+		t := strings.TrimPrefix(text, "/tr_tg ")
 		processAI(bot, chatID, func() (string, error) {
-			return qwen.Translate(textToTranslate, "tg")
+			return qwen.Translate(t, "tg")
 		}, "🌐 Тарҷума (Тоҷикӣ):")
 
 	case strings.HasPrefix(text, "/sum "):
-		textToSum := strings.TrimPrefix(text, "/sum ")
+		t := strings.TrimPrefix(text, "/sum ")
 		processAI(bot, chatID, func() (string, error) {
-			return qwen.Summarize(textToSum)
+			return qwen.Summarize(t)
 		}, "📝 Хулоса:")
 
 	case !strings.HasPrefix(text, "/"):
-		// Ҳар паёми оддӣ = AI chat
 		processAI(bot, chatID, func() (string, error) {
-			return qwen.Chat(text, "Ту ёрдамчии AI ҳастӣ. Ба забони истифодабаранда ҷавоб деҳ.")
+			return qwen.Chat(text, "You are Superior AI. Answer in the user's language. Be helpful and concise.")
 		}, "🤖")
 
 	default:
-		reply(bot, chatID, "❓ Фармони нодида. /start барои меню.")
+		reply(bot, chatID, "❓ /start барои меню")
 	}
 }
 
 func processAI(bot *tgbotapi.BotAPI, chatID int64, fn func() (string, error), prefix string) {
-	// Typing indicator
-	action := tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping)
-	bot.Send(action)
-
+	bot.Send(tgbotapi.NewChatAction(chatID, tgbotapi.ChatTyping))
 	result, err := fn()
 	if err != nil {
-		reply(bot, chatID, "❌ Хатогӣ рӯй дод: "+err.Error())
+		reply(bot, chatID, "❌ Хатогӣ: "+err.Error())
 		return
 	}
-
 	reply(bot, chatID, fmt.Sprintf("%s\n\n%s", prefix, result))
 }
 
@@ -122,52 +107,39 @@ func sendMenu(bot *tgbotapi.BotAPI, chatID int64) {
 		),
 		tgbotapi.NewKeyboardButtonRow(
 			tgbotapi.NewKeyboardButton("📝 Хулоса"),
-			tgbotapi.NewKeyboardButton("ℹ️ Кӯмак"),
 		),
 	)
-
-	msg := tgbotapi.NewMessage(chatID, `🤖 *Superior AI Bot*
-
-Ман ёрдамчии AI ҳастам, ки бо Qwen 3 кор мекунам!
-
-*Функсияҳо:*
-• 💬 AI Chat — бо ман гап зан
-• 🌐 Тарҷума — ба Русӣ/Англисӣ/Тоҷикӣ
-• 📝 Хулоса — матни дароз хулоса кун
-
-Фармонҳо:
-/chat — чат бо AI
-/translate — тарҷума
-/summarize — хулосакунӣ`)
+	msg := tgbotapi.NewMessage(chatID, "🤖 *Superior AI*\n\nФармонҳо:\n/tr\\_ru Матн — тарҷума ба Русӣ\n/tr\\_en Text — translate to English\n/tr\\_tg Text — тарҷума ба Тоҷикӣ\n/sum Матн — хулоса")
 	msg.ParseMode = "Markdown"
 	msg.ReplyMarkup = keyboard
 	bot.Send(msg)
 }
 
 func reply(bot *tgbotapi.BotAPI, chatID int64, text string) {
-	msg := tgbotapi.NewMessage(chatID, text)
-	bot.Send(msg)
+	bot.Send(tgbotapi.NewMessage(chatID, text))
 }
 
 func startAPIServer() {
+	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
 	aiH := handlers.NewAIHandler()
 
-	api := r.Group("/api/v1/ai")
+	v1 := r.Group("/api/v1/ai")
 	{
-		api.POST("/chat", aiH.Chat)
-		api.POST("/translate", aiH.Translate)
-		api.POST("/summarize", aiH.Summarize)
+		v1.POST("/chat", aiH.Chat)
+		v1.POST("/translate", aiH.Translate)
+		v1.POST("/summarize", aiH.Summarize)
 	}
 
 	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{"status": "ok", "ai": "qwen3"})
+		c.JSON(200, gin.H{"status": "ok", "model": "qwen3"})
 	})
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "7860"
 	}
+	log.Println("🚀 API Server:", port)
 	r.Run(":" + port)
 }
