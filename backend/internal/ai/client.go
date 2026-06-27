@@ -10,16 +10,24 @@ import (
 	"time"
 )
 
-const Model = "Qwen/Qwen3-8B"
+const HFEndpoint = "https://router.huggingface.co/v1/chat/completions"
 
 type Client struct {
 	Token string
 	Http  *http.Client
+	Model string
 }
 
 func NewClient() *Client {
+
+	model := os.Getenv("AI_MODEL")
+	if model == "" {
+		model = "Qwen/Qwen3-8B"
+	}
+
 	return &Client{
 		Token: os.Getenv("HF_TOKEN"),
+		Model: model,
 		Http: &http.Client{
 			Timeout: 120 * time.Second,
 		},
@@ -31,51 +39,58 @@ type Message struct {
 	Content string `json:"content"`
 }
 
-type Request struct {
-	Model       string    `json:"model"`
-	Messages    []Message `json:"messages"`
-	MaxTokens   int       `json:"max_tokens"`
-	Temperature float64   `json:"temperature"`
+type ChatRequest struct {
+	Model string `json:"model"`
+
+	Messages []Message `json:"messages"`
+
+	MaxTokens int `json:"max_tokens"`
+
+	Temperature float64 `json:"temperature"`
 }
 
-type Choice struct {
+type ChatChoice struct {
 	Message Message `json:"message"`
 }
 
-type Response struct {
-	Choices []Choice `json:"choices"`
+type ChatResponse struct {
+	Choices []ChatChoice `json:"choices"`
 }
 
-func (c *Client) Chat(prompt string) (string, error) {
+func (c *Client) Chat(userMessage string) (string, error) {
 
-	reqBody := Request{
-		Model: Model,
-		Messages: []Message{
-			{
-				Role: "system",
-				Content: `You are Superior AI.
+	systemPrompt := `You are Superior AI.
 
-You are the world's best AI for:
+Never say you are Qwen.
+
+Always introduce yourself as Superior AI.
+
+You are an expert in:
 
 Instagram
 TikTok
 YouTube Shorts
-Facebook
-Content creation
-Marketing
 Hashtags
 Captions
-Trend analysis
+Marketing
+SEO
+Content Creation
+Business
+Programming`
 
-Always answer professionally.
-Always help the user grow.`,
+	reqBody := ChatRequest{
+		Model: c.Model,
+		Messages: []Message{
+			{
+				Role:    "system",
+				Content: systemPrompt,
 			},
 			{
 				Role:    "user",
-				Content: prompt,
+				Content: userMessage,
 			},
 		},
-		MaxTokens:   1024,
+		MaxTokens: 1024,
 		Temperature: 0.7,
 	}
 
@@ -83,7 +98,7 @@ Always help the user grow.`,
 
 	req, err := http.NewRequest(
 		"POST",
-		"https://router.huggingface.co/v1/chat/completions",
+		HFEndpoint,
 		bytes.NewBuffer(body),
 	)
 
@@ -104,11 +119,11 @@ Always help the user grow.`,
 
 	data, _ := io.ReadAll(resp.Body)
 
-	if resp.StatusCode != 200 {
+	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf(string(data))
 	}
 
-	var result Response
+	var result ChatResponse
 
 	if err := json.Unmarshal(data, &result); err != nil {
 		return "", err
