@@ -5,9 +5,6 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -32,29 +29,16 @@ jobs:
         run: |
           find hf-space -mindepth 1 -maxdepth 1 ! -name ".git" -exec rm -rf {} +
 
-      - name: Copy Backend Only
+      - name: Copy Backend
         run: |
-          mkdir -p hf-space
+          cp Dockerfile hf-space/
+          cp go.mod hf-space/
+          cp README.md hf-space/ || true
 
-          if [ -d backend ]; then
-            cp -r backend hf-space/
-          fi
+          cp -r backend hf-space/ || true
+          cp -r cmd hf-space/ || true
 
-          if [ -d cmd ]; then
-            cp -r cmd hf-space/
-          fi
-
-          if [ -d internal ]; then
-            cp -r internal hf-space/
-          fi
-
-          [ -f go.mod ] && cp go.mod hf-space/
-          [ -f go.sum ] && cp go.sum hf-space/
-          [ -f Dockerfile ] && cp Dockerfile hf-space/
-          [ -f README.md ] && cp README.md hf-space/
-          [ -f .gitattributes ] && cp .gitattributes hf-space/
-
-      - name: Push to Hugging Face
+      - name: Commit & Push
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_USERNAME: ${{ secrets.HF_USERNAME }}
@@ -63,6 +47,6 @@ jobs:
 
           git add .
 
-          git commit -m "Auto Deploy" || echo "No changes"
+          git commit -m "Auto Deploy $(date)" || true
 
           git push https://oauth2:${HF_TOKEN}@huggingface.co/spaces/${HF_USERNAME}/Telegram_Bot main
