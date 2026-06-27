@@ -1,33 +1,29 @@
-name: Superior Flutter Builder
+name: Initialize Flutter Project
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
-  flutter:
+  init:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: "17"
+          java-version: 17
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.35.2"
           channel: stable
-          cache: true
-
-      - name: Show Flutter Version
-        run: flutter --version
 
       - name: Create Flutter Project
         run: |
@@ -36,35 +32,17 @@ jobs:
               --project-name superior \
               --org com.superior.ai \
               .
+          else
+            flutter create .
           fi
 
-      - name: Ensure Platforms
+      - name: Commit Flutter Files
         run: |
-          flutter create .
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
 
-      - name: Get Packages
-        run: flutter pub get
+          git add .
 
-      - name: Analyze
-        run: flutter analyze || true
+          git diff --cached --quiet || git commit -m "Initialize Flutter project"
 
-      - name: Test
-        run: flutter test || true
-
-      - name: Build APK
-        run: flutter build apk --release
-
-      - name: Build AppBundle
-        run: flutter build appbundle --release
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: Superior-APK
-          path: build/app/outputs/flutter-apk/app-release.apk
-
-      - name: Upload AAB
-        uses: actions/upload-artifact@v4
-        with:
-          name: Superior-AAB
-          path: build/app/outputs/bundle/release/app-release.aab
+          git push
