@@ -1,24 +1,40 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"net/http"
 	"os"
+
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func main() {
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "Superior Bot Running 🚀")
-	})
-
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "7860"
+	token := os.Getenv("BOT_TOKEN")
+	if token == "" {
+		log.Fatal("BOT_TOKEN not found")
 	}
 
-	log.Println("Server started on :" + port)
+	bot, err := tgbotapi.NewBotAPI(token)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	u := tgbotapi.NewUpdate(0)
+	u.Timeout = 60
+
+	updates := bot.GetUpdatesChan(u)
+
+	log.Printf("Bot started: @%s", bot.Self.UserName)
+
+	for update := range updates {
+		if update.Message == nil {
+			continue
+		}
+
+		msg := tgbotapi.NewMessage(
+			update.Message.Chat.ID,
+			"Салом! 🤖 Superior AI фаъол аст.",
+		)
+
+		bot.Send(msg)
+	}
 }
