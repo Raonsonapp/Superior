@@ -5,12 +5,16 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Configure Git
         run: |
@@ -24,16 +28,41 @@ jobs:
         run: |
           git clone https://oauth2:${HF_TOKEN}@huggingface.co/spaces/${HF_USERNAME}/Telegram_Bot hf-space
 
-      - name: Copy Files
+      - name: Clean Space
         run: |
-          find . -maxdepth 1 ! -name ".git" ! -name "hf-space" ! -name "." -exec cp -r {} hf-space/ \;
+          find hf-space -mindepth 1 -maxdepth 1 ! -name ".git" -exec rm -rf {} +
 
-      - name: Push
+      - name: Copy Backend Only
+        run: |
+          mkdir -p hf-space
+
+          if [ -d backend ]; then
+            cp -r backend hf-space/
+          fi
+
+          if [ -d cmd ]; then
+            cp -r cmd hf-space/
+          fi
+
+          if [ -d internal ]; then
+            cp -r internal hf-space/
+          fi
+
+          [ -f go.mod ] && cp go.mod hf-space/
+          [ -f go.sum ] && cp go.sum hf-space/
+          [ -f Dockerfile ] && cp Dockerfile hf-space/
+          [ -f README.md ] && cp README.md hf-space/
+          [ -f .gitattributes ] && cp .gitattributes hf-space/
+
+      - name: Push to Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
           HF_USERNAME: ${{ secrets.HF_USERNAME }}
         run: |
           cd hf-space
+
           git add .
-          git commit -m "Auto Deploy" || true
-          git push
+
+          git commit -m "Auto Deploy" || echo "No changes"
+
+          git push https://oauth2:${HF_TOKEN}@huggingface.co/spaces/${HF_USERNAME}/Telegram_Bot main
