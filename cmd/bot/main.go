@@ -8,8 +8,22 @@ import (
 	"time"
 )
 
-func main() {
+func check(url string) {
+	client := &http.Client{
+		Timeout: 20 * time.Second,
+	}
 
+	resp, err := client.Get(url)
+	if err != nil {
+		log.Println(url, "❌", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	log.Println(url, "✅", resp.Status)
+}
+
+func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "7860"
@@ -20,23 +34,16 @@ func main() {
 	})
 
 	go func() {
-		log.Println(http.ListenAndServe(":"+port, nil))
+		log.Println("Server started on :" + port)
+		log.Fatal(http.ListenAndServe(":"+port, nil))
 	}()
 
 	time.Sleep(3 * time.Second)
 
-	client := &http.Client{
-		Timeout: 20 * time.Second,
-	}
-
-	resp, err := client.Get("https://api.telegram.org")
-
-	if err != nil {
-		log.Println("ERROR:", err)
-	} else {
-		log.Println("STATUS:", resp.Status)
-		resp.Body.Close()
-	}
+	check("https://google.com")
+	check("https://huggingface.co")
+	check("https://api.telegram.org")
+	check("https://api.github.com")
 
 	select {}
 }
