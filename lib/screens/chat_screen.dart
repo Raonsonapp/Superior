@@ -4,12 +4,10 @@ import '../models/chat_message.dart';
 import '../services/ai_service.dart';
 import '../widgets/message_bubble.dart';
 import '../widgets/chat_input.dart';
-
-enum ChatMode { chat, translate, summarize, code, improve }
+import 'features_screen.dart';
 
 class ChatScreen extends StatefulWidget {
-  final ChatMode mode;
-  const ChatScreen({super.key, required this.mode});
+  const ChatScreen({super.key});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -19,125 +17,65 @@ class _ChatScreenState extends State<ChatScreen> {
   final List<ChatMessage> _messages = [];
   final ScrollController _scrollController = ScrollController();
   bool _isLoading = false;
-  String _selectedLang = 'ru';
-
-  // Chat history барои multi-turn
-  final List<Map<String, String>> _history = [];
-
-  String get _title {
-    switch (widget.mode) {
-      case ChatMode.chat: return '💬 AI Chat';
-      case ChatMode.translate: return '🌐 Тарҷума';
-      case ChatMode.summarize: return '📝 Хулоса';
-      case ChatMode.code: return '💻 Код';
-      case ChatMode.improve: return '✍️ Матн';
-    }
-  }
-
-  String get _placeholder {
-    switch (widget.mode) {
-      case ChatMode.chat: return 'Паёми худро бинавис...';
-      case ChatMode.translate: return 'Матни тарҷумашавандаро бинавис...';
-      case ChatMode.summarize: return 'Матни дарозро барои хулоса бинавис...';
-      case ChatMode.code: return 'Кодро барои ислоҳ бинавис...';
-      case ChatMode.improve: return 'Матнро барои беҳтар кардан бинавис...';
-    }
-  }
+  int _chatCount = 1;
 
   @override
   void initState() {
     super.initState();
-    // Welcome message
+    _addWelcome();
+  }
+
+  void _addWelcome() {
     _messages.add(ChatMessage(
-      id: 'welcome',
-      content: _getWelcomeMessage(),
+      id: 'w',
+      content: 'Салом! Ман Superior AI ҳастам. Чӣ хел кӯмак карда метавонам?',
       isUser: false,
       timestamp: DateTime.now(),
     ));
   }
 
-  String _getWelcomeMessage() {
-    switch (widget.mode) {
-      case ChatMode.chat:
-        return '👋 Салом! Ман Superior AI ҳастам, бо Qwen 3 кор мекунам.\n\nЧӣ хел кӯмак карда метавонам?';
-      case ChatMode.translate:
-        return '🌐 Тарҷумон тайёр аст!\n\nЗабонро интихоб кун ва матнро бинавис.';
-      case ChatMode.summarize:
-        return '📝 Матнатро бинавис — ман онро дар 3-5 ҷумла хулоса мекунам.';
-      case ChatMode.code:
-        return '💻 Кодатро бинавис — ман хатоҳоро меёбам ва ислоҳ мекунам.';
-      case ChatMode.improve:
-        return '✍️ Матнатро бинавис — ман услуб ва грамматикаро беҳтар мекунам.';
-    }
-  }
-
-  Future<void> _sendMessage(String text) async {
+  Future<void> _send(String text) async {
     if (text.trim().isEmpty || _isLoading) return;
 
-    final userMsg = ChatMessage(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      content: text.trim(),
-      isUser: true,
-      timestamp: DateTime.now(),
-    );
-
-    final loadingMsg = ChatMessage(
-      id: 'loading',
-      content: '',
-      isUser: false,
-      timestamp: DateTime.now(),
-      isLoading: true,
-    );
-
     setState(() {
-      _messages.add(userMsg);
-      _messages.add(loadingMsg);
-      _isLoading = true;
-    });
-
-    _scrollToBottom();
-
-    String response;
-    try {
-      switch (widget.mode) {
-        case ChatMode.chat:
-          response = await AIService.chat(text, history: _history);
-          _history.add({'role': 'user', 'content': text});
-          _history.add({'role': 'assistant', 'content': response});
-          // Тарихро 10 паём маҳдуд мекунем
-          if (_history.length > 20) {
-            _history.removeRange(0, 2);
-          }
-          break;
-        case ChatMode.translate:
-          response = await AIService.translate(text, _selectedLang);
-          break;
-        case ChatMode.summarize:
-          response = await AIService.summarize(text);
-          break;
-        case ChatMode.code:
-          response = await AIService.fixCode(text);
-          break;
-        case ChatMode.improve:
-          response = await AIService.improveText(text);
-          break;
-      }
-    } catch (e) {
-      response = '❌ Хатогӣ: $e';
-    }
-
-    setState(() {
-      _messages.remove(loadingMsg);
       _messages.add(ChatMessage(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
-        content: response,
+        content: text.trim(),
+        isUser: true,
+        timestamp: DateTime.now(),
+      ));
+      _messages.add(ChatMessage(
+        id: 'loading',
+        content: '',
+        isUser: false,
+        timestamp: DateTime.now(),
+        isLoading: true,
+      ));
+      _isLoading = true;
+    });
+    _scrollToBottom();
+
+    final reply = await AIService.chat(text.trim());
+
+    setState(() {
+      _messages.removeWhere((m) => m.id == 'loading');
+      _messages.add(ChatMessage(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        content: reply,
         isUser: false,
         timestamp: DateTime.now(),
       ));
       _isLoading = false;
     });
-
     _scrollToBottom();
+  }
+
+  void _newChat() {
+    setState(() {
+      _messages.clear();
+      _chatCount++;
+      _addWelcome();
+    });
   }
 
   void _scrollToBottom() {
@@ -152,17 +90,75 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-  void _clearChat() {
-    setState(() {
-      _messages.clear();
-      _history.clear();
-      _messages.add(ChatMessage(
-        id: 'welcome',
-        content: _getWelcomeMessage(),
-        isUser: false,
-        timestamp: DateTime.now(),
-      ));
-    });
+  void _showSidebar() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF171717),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => Container(
+        height: MediaQuery.of(context).size.height * 0.75,
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF10A37F),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.auto_awesome, color: Colors.white, size: 18),
+                ),
+                const SizedBox(width: 12),
+                const Text('Superior AI',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold)),
+              ],
+            ),
+            const SizedBox(height: 24),
+            ListTile(
+              leading: const Icon(Icons.add_comment_outlined, color: Colors.white),
+              title: const Text('Чат нав', style: TextStyle(color: Colors.white)),
+              onTap: () {
+                Navigator.pop(context);
+                _newChat();
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.apps_outlined, color: Colors.white),
+              title: const Text('Функсияҳо', style: TextStyle(color: Colors.white)),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const FeaturesScreen()));
+              },
+            ),
+            const Divider(color: Color(0xFF2A2A2A)),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _chatCount,
+                itemBuilder: (_, i) => ListTile(
+                  leading: const Icon(Icons.chat_bubble_outline,
+                      color: Color(0xFF8E8EA0), size: 18),
+                  title: Text(
+                    'Чат ${_chatCount - i}',
+                    style: const TextStyle(color: Color(0xFF8E8EA0), fontSize: 14),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -174,176 +170,105 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFF0A0A0A),
       appBar: AppBar(
-        title: Text(
-          _title,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 17,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        backgroundColor: const Color(0xFF0A0A0A),
+        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.menu, color: Colors.white),
+          onPressed: _showSidebar,
         ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Superior AI',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1A1A1A),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: const Color(0xFF2A2A2A)),
+              ),
+              child: const Text(
+                'Qwen 3',
+                style: TextStyle(color: Color(0xFF8E8EA0), fontSize: 11),
+              ),
+            ),
+          ],
+        ),
+        centerTitle: true,
         actions: [
-          // Тугмаи New Chat — ЗАКРЕПЛЁН дар боло
           IconButton(
             icon: const Icon(Icons.add_comment_outlined, color: Colors.white),
+            onPressed: _newChat,
             tooltip: 'Чат нав',
-            onPressed: _clearChat,
-          ),
-          IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.white),
-            onPressed: () => _showOptions(context),
           ),
         ],
       ),
       body: Column(
         children: [
-          // Language selector барои translate mode
-          if (widget.mode == ChatMode.translate) _buildLangSelector(),
-
-          // Messages list
           Expanded(
             child: _messages.isEmpty
-                ? _buildEmptyState()
+                ? _buildEmpty()
                 : ListView.builder(
                     controller: _scrollController,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     itemCount: _messages.length,
-                    itemBuilder: (context, index) {
-                      return MessageBubble(
-                        message: _messages[index],
-                        onCopy: () {
-                          Clipboard.setData(
-                            ClipboardData(text: _messages[index].content),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Нусха гирифта шуд'),
-                              duration: Duration(seconds: 1),
-                            ),
-                          );
-                        },
-                      );
-                    },
+                    itemBuilder: (_, i) => MessageBubble(
+                      message: _messages[i],
+                      onCopy: () {
+                        Clipboard.setData(
+                            ClipboardData(text: _messages[i].content));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Нусха гирифта шуд'),
+                            duration: Duration(seconds: 1),
+                            backgroundColor: Color(0xFF10A37F),
+                          ),
+                        );
+                      },
+                    ),
                   ),
           ),
-
-          // Input field — ЗАКРЕПЛЁН дар поён
-          ChatInput(
-            placeholder: _placeholder,
-            isLoading: _isLoading,
-            onSend: _sendMessage,
-          ),
+          ChatInput(isLoading: _isLoading, onSend: _send),
         ],
       ),
     );
   }
 
-  Widget _buildLangSelector() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: const Color(0xFF1A1A1A),
-      child: Row(
-        children: [
-          const Text('Ба:', style: TextStyle(color: Colors.grey, fontSize: 14)),
-          const SizedBox(width: 12),
-          _LangBtn(label: '🇷🇺 Русӣ', value: 'ru', selected: _selectedLang,
-              onTap: () => setState(() => _selectedLang = 'ru')),
-          const SizedBox(width: 8),
-          _LangBtn(label: '🇬🇧 Англисӣ', value: 'en', selected: _selectedLang,
-              onTap: () => setState(() => _selectedLang = 'en')),
-          const SizedBox(width: 8),
-          _LangBtn(label: '🇹🇯 Тоҷикӣ', value: 'tg', selected: _selectedLang,
-              onTap: () => setState(() => _selectedLang = 'tg')),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmptyState() {
-    return const Center(
+  Widget _buildEmpty() {
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.chat_bubble_outline, color: Colors.grey, size: 48),
-          SizedBox(height: 12),
-          Text('Чат холӣ аст', style: TextStyle(color: Colors.grey)),
-        ],
-      ),
-    );
-  }
-
-  void _showOptions(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: const Color(0xFF1A1A1A),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (_) => Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.add_comment_outlined, color: Colors.white),
-              title: const Text('Чат нав', style: TextStyle(color: Colors.white)),
-              onTap: () {
-                Navigator.pop(context);
-                _clearChat();
-              },
+          Container(
+            width: 64,
+            height: 64,
+            decoration: BoxDecoration(
+              color: const Color(0xFF10A37F).withOpacity(0.15),
+              borderRadius: BorderRadius.circular(18),
             ),
-            ListTile(
-              leading: const Icon(Icons.delete_outline, color: Colors.red),
-              title: const Text('Тарих тоза', style: TextStyle(color: Colors.red)),
-              onTap: () {
-                Navigator.pop(context);
-                _clearChat();
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _LangBtn extends StatelessWidget {
-  final String label, value, selected;
-  final VoidCallback onTap;
-  const _LangBtn({
-    required this.label,
-    required this.value,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isSelected = value == selected;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF7C3AED) : const Color(0xFF2A2A2A),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.white : Colors.grey,
-            fontSize: 12,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            child: const Icon(Icons.auto_awesome,
+                color: Color(0xFF10A37F), size: 32),
           ),
-        ),
+          const SizedBox(height: 16),
+          const Text('Superior AI',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          const Text('Чи хел кӯмак карда метавонам?',
+              style: TextStyle(color: Color(0xFF8E8EA0), fontSize: 14)),
+        ],
       ),
     );
   }
