@@ -1,41 +1,82 @@
-func (c *Client) Chat(userMessage string) (string, error) {
-    // ... request body ...
+package api
 
-    // 3 маротиба кӯшиш мекунад
-    for attempt := 0; attempt < 3; attempt++ {
-        req, _ := http.NewRequest("POST", HFEndpoint, bytes.NewBuffer(body))
-        req.Header.Set("Authorization", "Bearer "+c.Token)
-        req.Header.Set("Content-Type", "application/json")
+import (
+	"net/http"
 
-        resp, err := c.Http.Do(req)
-        if err != nil {
-            if attempt < 2 {
-                time.Sleep(time.Duration(attempt+1) * 10 * time.Second)
-                continue
-            }
-            return "", err
-        }
-        defer resp.Body.Close()
-        data, _ := io.ReadAll(resp.Body)
+	"github.com/Raonsonapp/Superior/backend/internal/ai"
+	"github.com/gin-gonic/gin"
+)
 
-        if resp.StatusCode == 503 {
-            if attempt < 2 {
-                time.Sleep(20 * time.Second) // 20 сония интизор
-                continue
-            }
-            return "", fmt.Errorf("model_loading")
-        }
+type ChatRequest struct {
+	Message string `json:"message"`
+}
 
-        if resp.StatusCode != 200 {
-            return "", fmt.Errorf(string(data))
-        }
+type ChatResponse struct {
+	Success bool   `json:"success"`
+	Result  string `json:"result,omitempty"`
+	Reply   string `json:"reply,omitempty"`
+	Error   string `json:"error,omitempty"`
+}
 
-        var result ChatResponse
-        json.Unmarshal(data, &result)
-        if len(result.Choices) == 0 {
-            return "", fmt.Errorf("empty response")
-        }
-        return result.Choices[0].Message.Content, nil
-    }
-    return "", fmt.Errorf("model_loading")
+type TranslateRequest struct {
+	Text   string `json:"text"`
+	Target string `json:"target"`
+}
+
+type SummarizeRequest struct {
+	Text string `json:"text"`
+}
+
+func Chat(c *gin.Context) {
+	var req ChatRequest
+	if err := c.ShouldBindJSON(&req); err != nil || req.Message == "" {
+		c.JSON(http.StatusBadRequest, ChatResponse{Success: false, Error: "message лозим аст"})
+		return
+	}
+	client := ai.NewClient()
+	reply, err := client.Chat(req.Message)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, ChatResponse{Success: false, Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, ChatResponse{Success: true, Result: reply, Reply: reply})
+}
+
+func Translate(c *gin.Context) {
+	var req TranslateRequest
+	if err := c.ShouldBindJSON(&req); err != nil || req.Text == "" {
+		c.JSON(http.StatusBadRequest, ChatResponse{Success: false, Error: "text лозим аст"})
+		return
+	}
+	prompts := map[string]string{
+		"ru": "Translate to Russian. Reply with translation only:\n\n",
+		"en": "Translate to English. Reply with translation only:\n\n",
+		"tg": "Ба тоҷикӣ тарҷума кун. Фақат тарҷума:\n\n",
+	}
+	prompt := prompts[req.Target]
+	if prompt == "" {
+		prompt = prompts["en"]
+	}
+	client := ai.NewClient()
+	reply, err := client.Chat(prompt + req.Text)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, ChatResponse{Success: false, Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, ChatResponse{Success: true, Result: reply, Reply: reply})
+}
+
+func Summarize(c *gin.Context) {
+	var req SummarizeRequest
+	if err := c.ShouldBindJSON(&req); err != nil || req.Text == "" {
+		c.JSON(http.StatusBadRequest, ChatResponse{Success: false, Error: "text лозим аст"})
+		return
+	}
+	client := ai.NewClient()
+	reply, err := client.Chat("Summarize in 3-5 sentences:\n\n" + req.Text)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, ChatResponse{Success: false, Error: err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, ChatResponse{Success: true, Result: reply, Reply: reply})
 }
