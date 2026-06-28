@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ChatInput extends StatefulWidget {
-  final String placeholder;
   final bool isLoading;
   final Function(String) onSend;
 
-  const ChatInput({
-    super.key,
-    required this.placeholder,
-    required this.isLoading,
-    required this.onSend,
-  });
+  const ChatInput({super.key, required this.isLoading, required this.onSend});
 
   @override
   State<ChatInput> createState() => _ChatInputState();
@@ -18,7 +12,7 @@ class ChatInput extends StatefulWidget {
 
 class _ChatInputState extends State<ChatInput> {
   final TextEditingController _controller = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
+  final FocusNode _focus = FocusNode();
   bool _hasText = false;
 
   @override
@@ -27,12 +21,13 @@ class _ChatInputState extends State<ChatInput> {
     _controller.addListener(() {
       setState(() => _hasText = _controller.text.trim().isNotEmpty);
     });
+    _focus.addListener(() => setState(() {}));
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _focusNode.dispose();
+    _focus.dispose();
     super.dispose();
   }
 
@@ -53,80 +48,73 @@ class _ChatInputState extends State<ChatInput> {
         bottom: MediaQuery.of(context).padding.bottom + 10,
       ),
       decoration: const BoxDecoration(
-        color: Color(0xFF0D0D0D),
-        border: Border(top: BorderSide(color: Color(0xFF2A2A2A))),
+        color: Color(0xFF0A0A0A),
+        border: Border(top: BorderSide(color: Color(0xFF1A1A1A))),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Expanded(
-            child: Container(
-              constraints: const BoxConstraints(maxHeight: 120),
-              decoration: BoxDecoration(
-                color: const Color(0xFF1A1A1A),
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(
-                  color: _focusNode.hasFocus
-                      ? const Color(0xFF7C3AED)
-                      : const Color(0xFF2A2A2A),
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF171717),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: _focus.hasFocus
+                ? const Color(0xFF10A37F).withOpacity(0.5)
+                : const Color(0xFF2A2A2A),
+          ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                child: EditableText(
+                  controller: _controller,
+                  focusNode: _focus,
+                  style: const TextStyle(color: Colors.white, fontSize: 15),
+                  cursorColor: const Color(0xFF10A37F),
+                  backgroundCursorColor: Colors.grey,
+                  maxLines: 5,
+                  minLines: 1,
+                  keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.newline,
                 ),
-              ),
-              child: EditableText(
-                controller: _controller,
-                focusNode: _focusNode,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 15,
-                ),
-                cursorColor: const Color(0xFF7C3AED),
-                backgroundCursorColor: Colors.grey,
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-                textInputAction: TextInputAction.newline,
-                onChanged: (_) => setState(() {}),
-                onSubmitted: (_) => _send(),
               ),
             ),
-          ),
-          const SizedBox(width: 8),
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            child: GestureDetector(
-              onTap: widget.isLoading ? null : _send,
-              child: Container(
-                width: 44,
-                height: 44,
-                decoration: BoxDecoration(
-                  gradient: (_hasText && !widget.isLoading)
-                      ? const LinearGradient(
-                          colors: [Color(0xFF7C3AED), Color(0xFF4F46E5)],
-                        )
-                      : null,
-                  color: (_hasText && !widget.isLoading)
-                      ? null
-                      : const Color(0xFF2A2A2A),
-                  shape: BoxShape.circle,
-                ),
-                child: widget.isLoading
-                    ? const Center(
-                        child: SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Color(0xFF7C3AED),
+            Padding(
+              padding: const EdgeInsets.all(6),
+              child: GestureDetector(
+                onTap: _send,
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: 36,
+                  height: 36,
+                  decoration: BoxDecoration(
+                    color: (_hasText && !widget.isLoading)
+                        ? const Color(0xFF10A37F)
+                        : const Color(0xFF2A2A2A),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: widget.isLoading
+                      ? const Center(
+                          child: SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Color(0xFF10A37F),
+                            ),
                           ),
+                        )
+                      : Icon(
+                          Icons.arrow_upward_rounded,
+                          color: _hasText ? Colors.white : const Color(0xFF4A4A4A),
+                          size: 18,
                         ),
-                      )
-                    : Icon(
-                        Icons.arrow_upward_rounded,
-                        color: _hasText ? Colors.white : Colors.grey,
-                        size: 20,
-                      ),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
