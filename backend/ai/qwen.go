@@ -7,25 +7,34 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
-const (
-	HF_API_URL = "https://api-inference.huggingface.co/models/Qwen/Qwen3-8B"
-)
+const hfRouterURL = "https://router.huggingface.co/v1/chat/completions"
 
-type Message struct {
+type chatMessage struct {
 	Role    string `json:"role"`
 	Content string `json:"content"`
 }
 
-type HFRequest struct {
-	Inputs     string                 `json:"inputs"`
-	Parameters map[string]interface{} `json:"parameters"`
+type chatRequest struct {
+	Model       string        `json:"model"`
+	Messages    []chatMessage `json:"messages"`
+	MaxTokens   int           `json:"max_tokens"`
+	Temperature float64       `json:"temperature"`
+	Stream      bool          `json:"stream"`
 }
 
-type HFResponse []struct {
-	GeneratedText string `json:"generated_text"`
+type chatResponse struct {
+	Choices []struct {
+		Message struct {
+			Content string `json:"content"`
+		} `json:"message"`
+	} `json:"choices"`
+	Error *struct {
+		Message string `json:"message"`
+	} `json:"error"`
 }
 
 type QwenClient struct {
@@ -35,23 +44,23 @@ type QwenClient struct {
 
 func NewQwenClient() *QwenClient {
 	return &QwenClient{
-		httpClient: &http.Client{Timeout: 60 * time.Second},
+		httpClient: &http.Client{Timeout: 90 * time.Second},
 		token:      os.Getenv("HF_TOKEN"),
 	}
 }
 
 func (q *QwenClient) Chat(userMessage string, systemPrompt string) (string, error) {
-	prompt := fmt.Sprintf("<|im_start|>system\n%s<|im_end|>\n<|im_start|>user\n%s<|im_end|>\n<|im_start|>assistant\n", systemPrompt, userMessage)
+	messages := []chatMessage{
+		{Role: "system", Content: systemPrompt},
+		{Role: "user", Content: userMessage},
+	}
 
-	reqBody := HFRequest{
-		Inputs: prompt,
-		Parameters: map[string]interface{}{
-			"max_new_tokens":   512,
-			"temperature":      0.7,
-			"top_p":            0.9,
-			"do_sample":        true,
-			"return_full_text": false,
-		},
+	reqBody := chatRequest{
+		Model:       "Qwen/Qwen3-8B",
+		Messages:    messages,
+		MaxTokens:   512,
+		Temperature: 0.7,
+		Stream:      false,
 	}
 
 	bodyBytes, err := json.Marshal(reqBody)
@@ -59,10 +68,11 @@ func (q *QwenClient) Chat(userMessage string, systemPrompt string) (string, erro
 		return "", fmt.Errorf("marshal error: %w", err)
 	}
 
-	req, err := http.NewRequest("POST", HF_API_URL, bytes.NewReader(bodyBytes))
+	req, err := http.NewRequest("POST", hfRouterURL, bytes.NewReader(bodyBytes))
 	if err != nil {
 		return "", err
 	}
+
 	req.Header.Set("Content-Type", "application/json")
 	if q.token != "" {
 		req.Header.Set("Authorization", "Bearer "+q.token)
@@ -80,47 +90,52 @@ func (q *QwenClient) Chat(userMessage string, systemPrompt string) (string, erro
 	}
 
 	if resp.StatusCode == 503 {
-		return "⏳ Модел дар ҳоли бор шудан аст. Лутфан 30 сония интизор шавед ва дубора кӯшиш кунед.", nil
+		return "⏳ Модел бор мешавад. 30 сония интизор шав ва дубора кӯшиш кун.", nil
+	}
+
+	if resp.StatusCode == 429 {
+		return "⏳ Лимит пур шуд. Каме интизор шав.", nil
 	}
 
 	if resp.StatusCode != 200 {
-		return "", fmt.Errorf("HF API error %d: %s", resp.StatusCode, string(respBytes))
+		return "", fmt.Errorf("HF API хато %d: %s", resp.StatusCode, string(respBytes))
 	}
 
-	var hfResp HFResponse
+	var hfResp chatResponse
 	if err := json.Unmarshal(respBytes, &hfResp); err != nil {
-		return "", fmt.Errorf("unmarshal error: %w, body: %s", err, string(respBytes))
+		return "", fmt.Errorf("parse error: %w", err)
 	}
 
-	if len(hfResp) == 0 || hfResp[0].GeneratedText == "" {
-		return "Ҷавоб дода нашуд. Дубора кӯшиш кунед.", nil
+	if hfResp.Error != nil {
+		return "", fmt.Errorf("AI хато: %s", hfResp.Error.Message)
 	}
 
-	return hfResp[0].GeneratedText, nil
+	if len(hfResp.Choices) == 0 {
+		return "Ҷавоб дода нашуд. Дубора кӯшиш кун.", nil
+	}
+
+	result := strings.TrimSpace(hfResp.Choices[0].Message.Content)
+	if result == "" {
+		return "Ҷавоб холӣ омад. Дубора кӯшиш кун.", nil
+	}
+
+	return result, nil
 }
 
 func (q *QwenClient) Translate(text string, targetLang string) (string, error) {
-	var langPrompt string
-	switch targetLang {
-	case "ru":
-		langPrompt = "Translate the following text to Russian. Reply with translation only, no explanations."
-	case "en":
-		langPrompt = "Translate the following text to English. Reply with translation only, no explanations."
-	case "tg":
-		langPrompt = "Матни зеринро ба забони тоҷикӣ тарҷума кун. Фақат тарҷумаро бинавис."
-	default:
-		langPrompt = "Translate the following text to English. Reply with translation only."
+	prompts := map[string]string{
+		"ru": "Переведи текст на русский язык. Дай только перевод без объяснений.",
+		"en": "Translate the text to English. Give only the translation without explanations.",
+		"tg": "Матнро ба тоҷикӣ тарҷума кун. Фақат тарҷумаро бинавис.",
 	}
-	return q.Chat(text, langPrompt)
+	prompt, ok := prompts[targetLang]
+	if !ok {
+		prompt = prompts["en"]
+	}
+	return q.Chat(text, prompt)
 }
 
 func (q *QwenClient) Summarize(text string) (string, error) {
-	return q.Chat(text, "Summarize the following text concisely in 3-5 sentences. Be clear and informative.")
-}
-
-func (q *QwenClient) DescribeImage(imageURL string) (string, error) {
-	// Qwen3-8B текстӣ аст, барои image multimodal Qwen2-VL лозим аст
-	// Феълан image URL-ро метавон тавассути caption тавсиф кард
-	prompt := fmt.Sprintf("I have an image at this URL: %s\nDescribe what this image might contain based on the URL path and filename.", imageURL)
-	return q.Chat(prompt, "You are a helpful assistant.")
+	return q.Chat(text,
+		"Summarize the following text in 3-5 sentences. Be concise and clear.")
 }
