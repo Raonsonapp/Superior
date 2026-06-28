@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
-import 'screens/home_screen.dart';
+import 'package:flutter/services.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
+  ));
   runApp(const SuperiorApp());
 }
 
@@ -14,18 +20,13 @@ class SuperiorApp extends StatelessWidget {
       title: 'Superior AI',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF0D0D0D),
+        scaffoldBackgroundColor: const Color(0xFF0A0A0A),
         colorScheme: const ColorScheme.dark(
-          primary: Color(0xFF7C3AED),
-          secondary: Color(0xFF5B21B6),
+          primary: Color(0xFF10A37F),
           surface: Color(0xFF1A1A1A),
         ),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF0D0D0D),
-          elevation: 0,
-        ),
       ),
-      home: const HomeScreen(),
+      home: const SplashScreen(),
     );
   }
 }
