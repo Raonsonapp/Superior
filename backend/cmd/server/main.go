@@ -78,6 +78,28 @@ func callAI(message, system string) (string, error) {
 	return "", fmt.Errorf("3 маротиба кӯшиш шуд, нашуд")
 }
 
+const systemPrompt = `You are Superior AI, a helpful and friendly AI assistant.
+
+CRITICAL LANGUAGE RULE:
+- Detect the language of the user's message
+- ALWAYS respond in the EXACT SAME language the user used
+- If user writes in Tajik (тоҷикӣ/точики) → respond ONLY in Tajik
+- If user writes in Russian (русский) → respond ONLY in Russian  
+- If user writes in English → respond ONLY in English
+- If user writes in Uzbek → respond ONLY in Uzbek
+- NEVER mix languages in your response
+- NEVER switch to a different language
+
+IDENTITY:
+- Your name is Superior AI
+- Never say you are Qwen, GPT, or any other AI
+- Always introduce yourself as Superior AI
+
+BEHAVIOR:
+- Be helpful, friendly and concise
+- Give clear and accurate answers
+- Use markdown formatting when helpful`
+
 func main() {
 	_ = godotenv.Load()
 	gin.SetMode(gin.ReleaseMode)
@@ -111,8 +133,7 @@ func main() {
 			c.JSON(400, gin.H{"success": false, "error": "message лозим аст"})
 			return
 		}
-		reply, err := callAI(req.Message,
-			"You are Superior AI. Never say you are Qwen. Answer helpfully in the user's language.")
+		reply, err := callAI(req.Message, systemPrompt)
 		if err != nil {
 			c.JSON(500, gin.H{"success": false, "error": err.Error()})
 			return
@@ -126,10 +147,14 @@ func main() {
 			Target string `json:"target"`
 		}
 		c.ShouldBindJSON(&req)
+		if req.Text == "" {
+			c.JSON(400, gin.H{"success": false, "error": "text лозим аст"})
+			return
+		}
 		prompts := map[string]string{
-			"ru": "Translate to Russian. Reply with translation only, no explanations.",
-			"en": "Translate to English. Reply with translation only, no explanations.",
-			"tg": "Ба тоҷикӣ тарҷума кун. Фақат тарҷума, тавзеҳ лозим нест.",
+			"ru": "Translate the following text to Russian. Reply with the translation only, no explanations.",
+			"en": "Translate the following text to English. Reply with the translation only, no explanations.",
+			"tg": "Матни зеринро ба забони тоҷикӣ тарҷума кун. Танҳо тарҷумаро бинавис, тавзеҳ лозим нест.",
 		}
 		system := prompts[req.Target]
 		if system == "" {
@@ -148,8 +173,12 @@ func main() {
 			Text string `json:"text"`
 		}
 		c.ShouldBindJSON(&req)
+		if req.Text == "" {
+			c.JSON(400, gin.H{"success": false, "error": "text лозим аст"})
+			return
+		}
 		reply, err := callAI(req.Text,
-			"Summarize the following text in 3-5 sentences. Be concise and clear.")
+			"Summarize the following text in 3-5 sentences. Respond in the same language as the text. Be concise and clear.")
 		if err != nil {
 			c.JSON(500, gin.H{"success": false, "error": err.Error()})
 			return
