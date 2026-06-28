@@ -1,13 +1,13 @@
-FROM golang:1.24
+FROM golang:1.24-alpine AS builder
 
 WORKDIR /app
-
 COPY . .
 
-RUN go mod tidy
+RUN cd backend && go mod tidy && go build -o /app/superior ./cmd/server
 
-RUN go build -o superior ./cmd/bot
+FROM alpine:latest
+WORKDIR /app
+COPY --from=builder /app/superior .
 
 EXPOSE 7860
-
 CMD ["./superior"]
