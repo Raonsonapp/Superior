@@ -1,42 +1,55 @@
 import 'package:flutter/material.dart';
 import '../models/chat_message.dart';
+import 'message_content.dart';
 
 class MessageBubble extends StatelessWidget {
   final ChatMessage message;
   final VoidCallback? onCopy;
+  final VoidCallback? onRegenerate;
 
-  const MessageBubble({super.key, required this.message, this.onCopy});
+  const MessageBubble({
+    super.key,
+    required this.message,
+    this.onCopy,
+    this.onRegenerate,
+  });
 
   @override
   Widget build(BuildContext context) {
-    if (message.isLoading) return _buildLoading();
+    if (message.isUser) return _userMessage();
+    return _aiMessage(context);
+  }
 
-    if (message.isUser) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Flexible(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF2A2A2A),
-                  borderRadius: BorderRadius.circular(18),
-                ),
-                child: Text(
-                  message.content,
-                  style: const TextStyle(color: Colors.white, fontSize: 15, height: 1.5),
-                ),
+  Widget _userMessage() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Flexible(
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFF2A2A2A),
+                borderRadius: BorderRadius.circular(18),
+              ),
+              child: SelectableText(
+                message.content,
+                style: const TextStyle(
+                    color: Colors.white, fontSize: 15, height: 1.5),
               ),
             ),
-          ],
-        ),
-      );
-    }
+          ),
+        ],
+      ),
+    );
+  }
 
-    // AI message — ChatGPT style (no bubble, full width)
+  Widget _aiMessage(BuildContext context) {
+    final isEmptyStreaming =
+        message.isStreaming && message.content.trim().isEmpty;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
@@ -47,7 +60,9 @@ class MessageBubble extends StatelessWidget {
             height: 32,
             margin: const EdgeInsets.only(right: 12, top: 2),
             decoration: BoxDecoration(
-              color: const Color(0xFF10A37F),
+              gradient: const LinearGradient(
+                colors: [Color(0xFF10A37F), Color(0xFF1A7F64)],
+              ),
               borderRadius: BorderRadius.circular(8),
             ),
             child: const Icon(Icons.auto_awesome, color: Colors.white, size: 16),
@@ -56,46 +71,34 @@ class MessageBubble extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  message.content,
-                  style: const TextStyle(
-                      color: Color(0xFFECECEC), fontSize: 15, height: 1.6),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    _ActionBtn(
-                      icon: Icons.copy_outlined,
-                      label: 'Нусха',
-                      onTap: onCopy ?? () {},
+                if (isEmptyStreaming)
+                  const _TypingDots()
+                else
+                  MessageContent(message.content),
+                if (!message.isStreaming && message.content.trim().isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      children: [
+                        _ActionBtn(
+                          icon: Icons.copy_outlined,
+                          label: 'Нусха',
+                          onTap: onCopy ?? () {},
+                        ),
+                        if (onRegenerate != null) ...[
+                          const SizedBox(width: 8),
+                          _ActionBtn(
+                            icon: Icons.refresh,
+                            label: 'Аз нав',
+                            onTap: onRegenerate!,
+                          ),
+                        ],
+                      ],
                     ),
-                  ],
-                ),
+                  ),
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLoading() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 32,
-            height: 32,
-            margin: const EdgeInsets.only(right: 12, top: 2),
-            decoration: BoxDecoration(
-              color: const Color(0xFF10A37F),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(Icons.auto_awesome, color: Colors.white, size: 16),
-          ),
-          const _TypingDots(),
         ],
       ),
     );
@@ -107,7 +110,8 @@ class _ActionBtn extends StatelessWidget {
   final String label;
   final VoidCallback onTap;
 
-  const _ActionBtn({required this.icon, required this.label, required this.onTap});
+  const _ActionBtn(
+      {required this.icon, required this.label, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +146,8 @@ class _TypingDots extends StatefulWidget {
   State<_TypingDots> createState() => _TypingDotsState();
 }
 
-class _TypingDotsState extends State<_TypingDots> with TickerProviderStateMixin {
+class _TypingDotsState extends State<_TypingDots>
+    with TickerProviderStateMixin {
   late List<AnimationController> _controllers;
 
   @override
@@ -164,14 +169,16 @@ class _TypingDotsState extends State<_TypingDots> with TickerProviderStateMixin 
 
   @override
   void dispose() {
-    for (final c in _controllers) c.dispose();
+    for (final c in _controllers) {
+      c.dispose();
+    }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 10),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
         children: List.generate(3, (i) {
           return AnimatedBuilder(

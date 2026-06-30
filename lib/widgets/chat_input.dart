@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 
 class ChatInput extends StatefulWidget {
-  final bool isLoading;
+  final bool isStreaming;
   final Function(String) onSend;
+  final VoidCallback? onStop;
 
-  const ChatInput({super.key, required this.isLoading, required this.onSend});
+  const ChatInput({
+    super.key,
+    required this.isStreaming,
+    required this.onSend,
+    this.onStop,
+  });
 
   @override
   State<ChatInput> createState() => _ChatInputState();
@@ -19,7 +25,8 @@ class _ChatInputState extends State<ChatInput> {
   void initState() {
     super.initState();
     _controller.addListener(() {
-      setState(() => _hasText = _controller.text.trim().isNotEmpty);
+      final has = _controller.text.trim().isNotEmpty;
+      if (has != _hasText) setState(() => _hasText = has);
     });
     _focus.addListener(() => setState(() {}));
   }
@@ -32,7 +39,7 @@ class _ChatInputState extends State<ChatInput> {
   }
 
   void _send() {
-    if (!_hasText || widget.isLoading) return;
+    if (!_hasText || widget.isStreaming) return;
     final text = _controller.text.trim();
     _controller.clear();
     widget.onSend(text);
@@ -66,50 +73,52 @@ class _ChatInputState extends State<ChatInput> {
           children: [
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                child: EditableText(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                child: TextField(
                   controller: _controller,
                   focusNode: _focus,
                   style: const TextStyle(color: Colors.white, fontSize: 15),
                   cursorColor: const Color(0xFF10A37F),
-                  backgroundCursorColor: Colors.grey,
-                  maxLines: 5,
+                  maxLines: 6,
                   minLines: 1,
                   keyboardType: TextInputType.multiline,
                   textInputAction: TextInputAction.newline,
+                  decoration: const InputDecoration(
+                    hintText: 'Паём нависед…',
+                    hintStyle: TextStyle(color: Color(0xFF6A6A6A)),
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.symmetric(vertical: 10),
+                  ),
                 ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(6),
               child: GestureDetector(
-                onTap: _send,
+                onTap: widget.isStreaming ? widget.onStop : _send,
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: (_hasText && !widget.isLoading)
-                        ? const Color(0xFF10A37F)
-                        : const Color(0xFF2A2A2A),
+                    color: widget.isStreaming
+                        ? Colors.white
+                        : (_hasText
+                            ? const Color(0xFF10A37F)
+                            : const Color(0xFF2A2A2A)),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: widget.isLoading
-                      ? const Center(
-                          child: SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Color(0xFF10A37F),
-                            ),
-                          ),
-                        )
-                      : Icon(
-                          Icons.arrow_upward_rounded,
-                          color: _hasText ? Colors.white : const Color(0xFF4A4A4A),
-                          size: 18,
-                        ),
+                  child: Icon(
+                    widget.isStreaming
+                        ? Icons.stop_rounded
+                        : Icons.arrow_upward_rounded,
+                    color: widget.isStreaming
+                        ? Colors.black
+                        : (_hasText ? Colors.white : const Color(0xFF4A4A4A)),
+                    size: 18,
+                  ),
                 ),
               ),
             ),
