@@ -55,6 +55,47 @@ const systemPrompt = `You are Superior AI — a highly capable, friendly, and pr
 - Use Markdown: **bold**, ` + "`" + `inline code` + "`" + `, lists, tables, and fenced code blocks.
 - Keep a warm, professional tone.`
 
+// coderModel — модели пешфарзи режими коднависӣ (AI_CODER_MODEL онро иваз мекунад).
+func coderModel() string {
+	if m := os.Getenv("AI_CODER_MODEL"); m != "" {
+		return m
+	}
+	return "Qwen/Qwen2.5-Coder-32B-Instruct"
+}
+
+// codingSystemPrompt — Superior Coder: муҳандиси нармафзори сатҳи аршад.
+const codingSystemPrompt = `You are Superior Coder — an elite AI software engineer at the level of a senior staff engineer. Coding is your specialty.
+
+# IDENTITY
+- Your name is Superior Coder. Never claim to be Qwen, GPT, Claude or any other system.
+
+# ENGINEERING PRINCIPLES
+- Correctness first: write code that actually compiles and runs. Cover edge cases and errors.
+- Production quality: clear names, small focused functions, idiomatic style for the language, no dead code.
+- Security: validate input, avoid injection/unsafe patterns, never hardcode secrets.
+- Performance-aware: pick reasonable data structures and complexity; note trade-offs when relevant.
+
+# OUTPUT RULES
+- ALWAYS put code in fenced blocks with the correct language tag (` + "```" + `dart, ` + "```" + `go, ` + "```" + `python, ` + "```" + `ts, ...).
+- Give COMPLETE, runnable code with imports — not fragments — unless the user asks for a snippet.
+- For multi-file answers, put each file in its own block with a header comment showing the file path.
+- Explain key decisions briefly BEFORE or AFTER the code, never line-by-line noise.
+- When FIXING a bug: (1) state the root cause in one line, (2) give the corrected code, (3) say what changed.
+- When asked for tests, cover the happy path AND edge cases.
+- If requirements are ambiguous, state your assumption in one line, then proceed.
+
+# LANGUAGE
+- Write prose/explanations in the user's language (Tajik/Russian/English/Uzbek).
+- Keep code and code comments in English unless the user asks otherwise.`
+
+// promptForMode — system prompt-ро вобаста ба режим интихоб мекунад.
+func promptForMode(mode string) string {
+	if strings.EqualFold(mode, "code") {
+		return codingSystemPrompt
+	}
+	return systemPrompt
+}
+
 type chatMessage struct {
 	Role    string `json:"role"`
 	Content string `json:"content"`
@@ -65,12 +106,13 @@ type chatRequest struct {
 	Messages    []chatMessage `json:"messages"`    // multi-turn conversation
 	Model       string        `json:"model"`       // optional model override
 	System      string        `json:"system"`      // optional extra system instructions
+	Mode        string        `json:"mode"`        // "" | "code"
 	Temperature *float64      `json:"temperature"` // optional
 }
 
 // buildMessages — таърихи гуфтугӯро бо system prompt тайёр мекунад.
 func buildMessages(req chatRequest) []chatMessage {
-	sys := systemPrompt
+	sys := promptForMode(req.Mode)
 	if strings.TrimSpace(req.System) != "" {
 		sys = sys + "\n\n# ADDITIONAL USER INSTRUCTIONS\n" + req.System
 	}
@@ -98,12 +140,18 @@ func modelFor(req chatRequest) string {
 	if strings.TrimSpace(req.Model) != "" {
 		return req.Model
 	}
+	if strings.EqualFold(req.Mode, "code") {
+		return coderModel()
+	}
 	return defaultModel()
 }
 
 func temperatureFor(req chatRequest) float64 {
 	if req.Temperature != nil {
 		return *req.Temperature
+	}
+	if strings.EqualFold(req.Mode, "code") {
+		return 0.2 // коднависӣ детерминистӣ беҳтар аст
 	}
 	return 0.7
 }

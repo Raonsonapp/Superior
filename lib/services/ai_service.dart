@@ -10,10 +10,13 @@ class AIService {
 
   /// Чати стримӣ — ҷавобро ҳарф-ба-ҳарф ҳамчун Stream бармегардонад.
   /// [history] — ҳамаи паёмҳои гуфтугӯ (бе паёми streaming-и ҷорӣ).
+  /// [mode] — "" ё "code" (режими коднависӣ).
   static Stream<String> chatStream(
     List<ChatMessage> history,
-    String model,
-  ) async* {
+    String model, {
+    String? mode,
+    String? system,
+  }) async* {
     final client = http.Client();
     try {
       final request = http.Request(
@@ -24,6 +27,8 @@ class AIService {
       request.body = jsonEncode({
         'model': model,
         'messages': history.map((m) => m.toApi()).toList(),
+        if (mode != null && mode.isNotEmpty) 'mode': mode,
+        if (system != null && system.isNotEmpty) 'system': system,
       });
 
       final response = await client.send(request).timeout(
