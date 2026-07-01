@@ -1,0 +1,234 @@
+{
+  "volume": 1,
+  "title": "Superior AI Academy — Volume 1",
+  "parts": [
+    {
+      "id": 12,
+      "topic": "Recursion",
+      "goal": "Learn how a problem can solve itself by breaking into smaller versions.",
+      "sections": [
+        {
+          "title": "Recursion Idea",
+          "body": "Imagine climbing stairs.\n\nTo reach stair 10, you first reach stair 9.\nTo reach stair 9, you first reach stair 8.\n\nLarge problems become smaller until they are easy.\nThis is recursion."
+        },
+        {
+          "title": "Base Case",
+          "body": "Every recursive solution needs a stopping point.\n\nWithout a stopping point, it never ends.\n\nThis stopping point is called the Base Case.\n\nExercise:\nGive three real-life examples where a task naturally stops."
+        },
+        {
+          "title": "Recursive Thinking",
+          "body": "Examples:\n- Opening nested boxes.\n- Looking through folders.\n- Family tree.\n\nEach step is similar to the previous one."
+        },
+        {
+          "title": "Compare With Loops",
+          "body": "Loops repeat.\n\nRecursion calls itself.\n\nSome problems are easier with loops.\nOthers are easier with recursion.\n\nExercise:\nCompare washing dishes using a loop and recursion."
+        },
+        {
+          "title": "Common Mistakes",
+          "body": "Mistakes:\n- No base case.\n- Wrong recursive call.\n- Infinite recursion.\n\nAlways ask:\n'When does this stop?'"
+        },
+        {
+          "title": "Practice",
+          "body": "Practice:\n1. Count down from 10.\n2. Count up to 20.\n3. Describe nested folders.\n4. Explain recursion using Russian dolls.\n5. Explain recursion using mirrors."
+        },
+        {
+          "title": "Mini Project",
+          "body": "Mini Project\n\nDesign a Folder Explorer.\n\nEach folder may contain:\n- Files\n- More folders\n\nDescribe how a recursive algorithm explores every folder."
+        }
+      ],
+      "quiz": [
+        "What is recursion?",
+        "Why is the base case important?",
+        "Name two real-life recursion examples.",
+        "Difference between recursion and loops?",
+        "When would recursion be useful?"
+      ]
+    },
+    {
+      "id": 13,
+      "topic": "Sorting Algorithms",
+      "goal": "Learn how computers organize data.",
+      "sections": [
+        {
+          "title": "Why Sorting",
+          "body": "Sorting puts information into order.\nExamples: books on a shelf, students by height, scores from highest to lowest.\nExercise: List 10 things that can be sorted."
+        },
+        {
+          "title": "Bubble Sort",
+          "body": "Bubble Sort compares neighboring items and swaps them until everything is ordered.\nReal-life example: moving the tallest person step by step to the end of a line.\nPractice: Sort numbers 5,2,4,1,3 manually."
+        },
+        {
+          "title": "Selection Sort",
+          "body": "Selection Sort finds the smallest item and places it first.\nExample: choosing the smallest card from your hand.\nExercise: Sort 8,3,6,1,5."
+        },
+        {
+          "title": "Insertion Sort",
+          "body": "Insertion Sort inserts each new item into the correct position.\nExample: placing playing cards into your hand.\nExercise: Explain how you sort exam papers."
+        },
+        {
+          "title": "Merge Quick",
+          "body": "Merge Sort splits a problem into smaller parts and merges them.\nQuick Sort chooses a pivot and partitions values.\nYou don't need the code yet—understand the idea first."
+        },
+        {
+          "title": "Comparison",
+          "body": "Bubble: simple, slow.\nSelection: simple, fewer swaps.\nInsertion: good for small nearly-sorted lists.\nMerge & Quick: much faster for large data."
+        },
+        {
+          "title": "Practice",
+          "body": "Practice:\n1. Sort student names.\n2. Sort prices.\n3. Sort dates.\n4. Explain which algorithm you'd choose and why."
+        },
+        {
+          "title": "Mini Project",
+          "body": "Mini Project: Design a scoreboard that always keeps players sorted from highest score to lowest."
+        }
+      ],
+      "quiz": [
+        "Why do we sort?",
+        "Describe Bubble Sort.",
+        "Describe Selection Sort.",
+        "Describe Insertion Sort.",
+        "Which algorithms are generally faster on large data?"
+      ]
+    },
+    {
+      "id": 18,
+      "topic": "Software Architecture",
+      "goal": "Understand how large software systems are organized.",
+      "sections": [
+        {
+          "title": "What Is Architecture",
+          "body": "Architecture is the blueprint of a software system.\nLike a house needs rooms, software needs organized parts.\nExercise: Draw the rooms of your house and explain their jobs."
+        },
+        {
+          "title": "Client Server",
+          "body": "Client asks, Server answers.\nExample: Your phone requests weather data, the server sends it back.\nExercise: Describe ordering food using the client-server idea."
+        },
+        {
+          "title": "Frontend Backend",
+          "body": "Frontend is what users see.\nBackend processes data and business logic.\nDatabase stores information.\nExercise: Identify these parts in a social media app."
+        },
+        {
+          "title": "Modules",
+          "body": "Large projects are split into modules.\nExamples: Auth, Chat, Payments, Notifications.\nEach module has one responsibility."
+        },
+        {
+          "title": "APIs",
+          "body": "An API is a bridge between systems.\nExample: A waiter carries your order to the kitchen and brings food back.\nExercise: Think of three real-life 'API' examples."
+        },
+        {
+          "title": "Scalability",
+          "body": "Good architecture allows growth.\nStart small, then improve as users increase.\nAvoid making everything one huge file."
+        },
+        {
+          "title": "Practice",
+          "body": "Practice:\nDesign the architecture of:\n- Notes App\n- Online Shop\n- School System\nList frontend, backend, database and APIs."
+        },
+        {
+          "title": "Mini Project",
+          "body": "Mini Project:\nDesign the architecture of a simple social network.\nInclude login, posts, chat, notifications and database."
+        }
+      ],
+      "quiz": [
+        "What is software architecture?",
+        "What is a client?",
+        "What is a server?",
+        "What is an API?",
+        "Why divide projects into modules?"
+      ]
+    },
+    {
+      "id": 19,
+      "topic": "Database Fundamentals",
+      "goal": "Learn how information is stored and organized.",
+      "sections": [
+        {
+          "title": "What Is Database",
+          "body": "A database is an organized collection of information.\nExamples: school records, hospital patients, online shop products.\nExercise: List five places where databases are used."
+        },
+        {
+          "title": "Tables Rows Columns",
+          "body": "A table stores one type of information.\nColumns describe attributes.\nRows represent records.\nExercise: Draw a Student table with Name, Age and Grade."
+        },
+        {
+          "title": "Primary Foreign Keys",
+          "body": "Primary Key uniquely identifies a row.\nForeign Key connects two tables.\nReal-life example: Student ID links students to exam results.\nExercise: Design two related tables."
+        },
+        {
+          "title": "Relationships",
+          "body": "Relationships:\nOne-to-One\nOne-to-Many\nMany-to-Many\nExercise: Explain relationships using teachers, students and classes."
+        },
+        {
+          "title": "SQL Basics",
+          "body": "Basic SQL ideas:\nSELECT\nINSERT\nUPDATE\nDELETE\nNo need to memorize syntax yet—understand what each command does."
+        },
+        {
+          "title": "Common Mistakes",
+          "body": "Common mistakes:\nDuplicate records\nMissing IDs\nWrong relationships\nPoor table design\nExercise: Explain why duplicate student IDs are a problem."
+        },
+        {
+          "title": "Practice",
+          "body": "Practice:\nDesign databases for:\n- Library\n- Hospital\n- Online Shop\n- Football Team\nList tables and relationships."
+        },
+        {
+          "title": "Mini Project",
+          "body": "Mini Project:\nDesign a database for a social media app.\nInclude Users, Posts, Comments, Likes and Followers.\nExplain how the tables connect."
+        }
+      ],
+      "quiz": [
+        "What is a database?",
+        "What is a table?",
+        "What is a row?",
+        "What is a Primary Key?",
+        "What is a Foreign Key?",
+        "Why are relationships important?"
+      ]
+    },
+    {
+      "id": 35,
+      "topic": "System Design Fundamentals",
+      "goal": "Learn how large applications are designed to serve many users reliably.",
+      "sections": [
+        {
+          "title": "What Is System Design",
+          "body": "System Design is planning how all parts of a software system work together.\n\nThink of designing a city:\n- Roads\n- Buildings\n- Water\n- Electricity\n\nSoftware also needs planning before building."
+        },
+        {
+          "title": "Monolith vs Microservices",
+          "body": "Monolith:\nEverything is in one application.\n\nMicroservices:\nMany smaller services work together.\n\nExercise:\nList advantages of each approach."
+        },
+        {
+          "title": "Scalability",
+          "body": "Scalability means handling more users without major problems.\n\nWays to scale:\n- Bigger servers (vertical)\n- More servers (horizontal)\n\nExercise:\nExplain how a restaurant serves more customers."
+        },
+        {
+          "title": "Load Balancer",
+          "body": "A Load Balancer distributes requests across multiple servers.\n\nAnalogy:\nA traffic officer directing cars to different roads.\n\nExercise:\nDescribe another real-life example."
+        },
+        {
+          "title": "Cache and Queue",
+          "body": "Cache stores frequently used data.\nMessage Queues allow systems to process work step by step.\n\nExamples:\n- Notifications\n- Email sending\n- Image processing"
+        },
+        {
+          "title": "High Availability",
+          "body": "High Availability keeps services running even if one server fails.\n\nFault Tolerance allows the system to continue working despite failures.\n\nExercise:\nThink of backup generators in a hospital."
+        },
+        {
+          "title": "Practice",
+          "body": "Practice:\n\nDesign a system for:\n- Social network\n- Online shop\n- Video platform\n\nIdentify:\nFrontend\nBackend\nDatabase\nCache\nLoad Balancer"
+        },
+        {
+          "title": "Mini Project",
+          "body": "Mini Project\n\nDesign the architecture of Superior AI.\n\nInclude:\n- Mobile App\n- Web App\n- API Gateway\n- AI Service\n- Database\n- Cache\n- Storage\n- Monitoring\n- Load Balancer"
+        }
+      ],
+      "quiz": [
+        "What is System Design?",
+        "Difference between Monolith and Microservices?",
+        "What is Scalability?",
+        "What does a Load Balancer do?",
+        "Why use Cache?",
+        "What is High Availability?"
+      ]
+    }
+  ]
+}

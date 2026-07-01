@@ -12,6 +12,9 @@ func TestPromptForMode(t *testing.T) {
 	if promptForMode("CODE") != codingSystemPrompt {
 		t.Error("mode бояд case-insensitive бошад")
 	}
+	if promptForMode("teach") != teachingSystemPrompt {
+		t.Error("teach mode бояд teachingSystemPrompt-ро баргардонад")
+	}
 	if promptForMode("") != systemPrompt {
 		t.Error("режими холӣ бояд systemPrompt-и пешфарзро баргардонад")
 	}

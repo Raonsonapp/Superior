@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'translate_screen.dart';
 import 'summarize_screen.dart';
 import 'coder_screen.dart';
+import 'academy_screen.dart';
 
 class FeaturesScreen extends StatelessWidget {
   const FeaturesScreen({super.key});
@@ -24,6 +25,15 @@ class FeaturesScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            _FeatureCard(
+              icon: Icons.school,
+              title: 'Superior Academy',
+              subtitle: 'Муаллими шахсӣ — ҳама чизро ёд деҳ',
+              color: const Color(0xFFF59E0B),
+              onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const AcademyScreen())),
+            ),
+            const SizedBox(height: 12),
             _FeatureCard(
               icon: Icons.terminal,
               title: 'Superior Coder',
