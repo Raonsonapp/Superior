@@ -132,7 +132,7 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                   SizedBox(height: 8),
                   Text(
-                    'Бо Qwen 3 кор мекунад',
+                    'Ёрирасон • Коднавис • Муаллим',
                     style: TextStyle(
                       color: Color(0xFF8E8EA0),
                       fontSize: 15,

@@ -74,21 +74,36 @@ class Course {
     required this.parts,
   });
 
-  static Course? _cache;
+  factory Course.fromJson(Map<String, dynamic> j) => Course(
+        volume: j['volume'] as int? ?? 1,
+        title: j['title'] as String? ?? 'Superior AI Academy',
+        parts: (j['parts'] as List<dynamic>? ?? [])
+            .map((e) => CoursePart.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
 
-  /// Курсро аз asset-и JSON бор мекунад (як маротиба cache мешавад).
-  static Future<Course> load() async {
+  /// Рӯйхати asset-ҳои volume — қисмҳои нав дар оянда осон илова мешаванд.
+  static const _assets = [
+    'assets/academy/volume1.json',
+    'assets/academy/volume2.json',
+  ];
+
+  static List<Course>? _cache;
+
+  /// Ҳамаи volume-ҳоро аз asset-ҳо бор мекунад (як маротиба cache мешавад).
+  static Future<List<Course>> loadAll() async {
     if (_cache != null) return _cache!;
-    final raw = await rootBundle.loadString('assets/academy/volume1.json');
-    final j = jsonDecode(raw) as Map<String, dynamic>;
-    final course = Course(
-      volume: j['volume'] as int? ?? 1,
-      title: j['title'] as String? ?? 'Superior AI Academy',
-      parts: (j['parts'] as List<dynamic>? ?? [])
-          .map((e) => CoursePart.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-    _cache = course;
-    return course;
+    final courses = <Course>[];
+    for (final a in _assets) {
+      try {
+        final raw = await rootBundle.loadString(a);
+        courses.add(Course.fromJson(jsonDecode(raw) as Map<String, dynamic>));
+      } catch (_) {
+        // volume мавҷуд нест — рад мекунем
+      }
+    }
+    courses.sort((a, b) => a.volume.compareTo(b.volume));
+    _cache = courses;
+    return courses;
   }
 }

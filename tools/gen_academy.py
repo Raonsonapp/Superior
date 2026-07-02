@@ -34,7 +34,15 @@ def read(path: str) -> str:
         return f.read().strip()
 
 
-def build(src: str) -> dict:
+def topic_fallback(dirname: str, pid: int) -> str:
+    # аз номи папка: Part05_Python_OOP -> "Python OOP"
+    m = re.search(r"Part\d+_(.+)$", os.path.basename(dirname.rstrip("/")))
+    if m:
+        return m.group(1).replace("_", " ").strip()
+    return f"Part {pid}"
+
+
+def build(src: str, volume: int, title: str) -> dict:
     parts = []
     part_dirs = sorted(
         glob.glob(os.path.join(src, "*Part*")),
@@ -44,16 +52,22 @@ def build(src: str) -> dict:
         if not os.path.isdir(d):
             continue
         pid = int(re.search(r"Part(\d+)", d).group(1))
-        topic, goal = f"Part {pid}", ""
+        topic, goal = "", ""
         rf = os.path.join(d, "00_READ_FIRST.txt")
         if os.path.exists(rf):
             txt = read(rf)
             m = re.search(r"Topic:\s*(.+)", txt)
             if m:
                 topic = m.group(1).strip()
+            else:
+                m = re.search(r"Language:\s*(.+)", txt)
+                if m:
+                    topic = m.group(1).strip()
             m = re.search(r"Goal:\s*(.+)", txt, re.S)
             if m:
                 goal = " ".join(m.group(1).split())
+        if not topic:
+            topic = topic_fallback(d, pid)
 
         sections, quiz = [], []
         for fn in sorted(os.listdir(d)):
@@ -78,11 +92,15 @@ def build(src: str) -> dict:
              "sections": sections, "quiz": quiz}
         )
 
-    return {
-        "volume": 1,
-        "title": "Superior AI Academy — Volume 1",
-        "parts": parts,
-    }
+    return {"volume": volume, "title": title, "parts": parts}
+
+
+def detect_volume(src: str) -> int:
+    for d in glob.glob(os.path.join(src, "*Volume*Part*")):
+        m = re.search(r"Volume(\d+)", os.path.basename(d))
+        if m:
+            return int(m.group(1))
+    return 1
 
 
 def main():
@@ -90,13 +108,15 @@ def main():
         print(__doc__)
         sys.exit(1)
     src = sys.argv[1]
-    out = sys.argv[2] if len(sys.argv) > 2 else "assets/academy/volume1.json"
-    data = build(src)
+    vol = int(sys.argv[3]) if len(sys.argv) > 3 else detect_volume(src)
+    out = sys.argv[2] if len(sys.argv) > 2 else f"assets/academy/volume{vol}.json"
+    title = sys.argv[4] if len(sys.argv) > 4 else f"Superior AI Academy — Volume {vol}"
+    data = build(src, vol, title)
     os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
     with open(out, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     total = sum(len(p["sections"]) for p in data["parts"])
-    print(f"✅ {out}: {len(data['parts'])} parts, {total} sections")
+    print(f"✅ {out}: volume {data['volume']}, {len(data['parts'])} parts, {total} sections")
 
 
 if __name__ == "__main__":

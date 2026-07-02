@@ -1,5 +1,5 @@
 name: superior
-description: "Superior AI App — Qwen 3 Powered"
+description: "Superior AI — умумӣ, коднавис ва муаллим"
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -20,9 +20,32 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.1
+
+# Иконро сохтан: dart run flutter_launcher_icons
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/superior_icon.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  adaptive_icon_background: "#10A37F"
+  adaptive_icon_foreground: "assets/icon/superior_icon_foreground.png"
+  web:
+    generate: true
+    image_path: "assets/icon/superior_icon.png"
+    background_color: "#0D0D0D"
+    theme_color: "#10A37F"
+  windows:
+    generate: true
+    image_path: "assets/icon/superior_icon.png"
+  macos:
+    generate: true
+    image_path: "assets/icon/superior_icon.png"
 
 flutter:
   uses-material-design: true
   assets:
     - assets/
     - assets/academy/
+    - assets/icon/

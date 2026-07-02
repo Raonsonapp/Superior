@@ -1,0 +1,1055 @@
+{
+  "volume": 2,
+  "title": "Volume 2 — Python то AI Engineering",
+  "parts": [
+    {
+      "id": 1,
+      "topic": "Python",
+      "goal": "Write your first real Python programs. Study each lesson in order. Practice after every lesson.",
+      "sections": [
+        {
+          "title": "What Is Python",
+          "body": "Python is a high-level programming language.\n\nWhy it is popular:\n- Easy to read\n- Powerful\n- Used in AI, web, automation, data science\n\nExercise:\nList 5 products that use Python."
+        },
+        {
+          "title": "Installation",
+          "body": "Install:\n1. Python\n2. VS Code\n3. Python extension\n\nVerify:\npython --version\n\nExercise:\nCheck your installed version."
+        },
+        {
+          "title": "First Program",
+          "body": "Your first program:\n\nprint(\"Hello, World!\")\n\nChange the message three times.\n\nExercise:\nPrint your name and your goal."
+        },
+        {
+          "title": "Variables",
+          "body": "Variables store values.\n\nname=\"Ali\"\nage=18\nheight=1.75\n\nExercise:\nCreate 10 variables about yourself."
+        },
+        {
+          "title": "Data Types",
+          "body": "Main types:\nstr\nint\nfloat\nbool\nlist\ndict\n\nExercise:\nWrite one example of each."
+        },
+        {
+          "title": "Input Output",
+          "body": "name=input(\"Your name: \")\nprint(\"Hello\",name)\n\nExercise:\nAsk for age and print it."
+        },
+        {
+          "title": "Operators",
+          "body": "Arithmetic:\n+ - * / // % **\n\nComparison:\n== != < > <= >=\n\nLogical:\nand or not\n\nExercise:\nCreate 15 expressions and predict results."
+        },
+        {
+          "title": "Mini Project",
+          "body": "Project:\nStudent Profile\n\nAsk:\n- Name\n- Age\n- City\n\nPrint a formatted profile.\nThen improve it with validation."
+        }
+      ],
+      "quiz": [
+        "What is Python?",
+        "What is a variable?",
+        "Difference between int and str?",
+        "What does input() do?",
+        "What does print() do?"
+      ]
+    },
+    {
+      "id": 2,
+      "topic": "Conditions & Loops",
+      "goal": "Learn how programs make decisions and repeat work.",
+      "sections": [
+        {
+          "title": "Conditions",
+          "body": "Conditions let a program choose what to do.\n\nExample:\nif score >= 50:\n    print(\"Passed\")\nelse:\n    print(\"Failed\")\n\nPractice:\nCreate a program that checks if a person is an adult."
+        },
+        {
+          "title": "Comparison Operators",
+          "body": "Operators:\n==\n!=\n<\n>\n<=\n>=\n\nExercise:\nPredict the result of 20 comparisons before running them."
+        },
+        {
+          "title": "Logical Operators",
+          "body": "Logical operators:\nand\nor\nnot\n\nExample:\nage >= 18 and has_id == True\n\nPractice:\nWrite 10 logical expressions."
+        },
+        {
+          "title": "If Elif Else",
+          "body": "Use elif when there are multiple choices.\n\nExample:\n90-100 -> A\n80-89 -> B\n70-79 -> C\n\nProject:\nGrade Calculator."
+        },
+        {
+          "title": "For Loops",
+          "body": "A for loop repeats a fixed number of times.\n\nExample:\nfor i in range(1,11):\n    print(i)\n\nPractice:\nPrint numbers 1-100.\nPrint even numbers.\nPrint odd numbers."
+        },
+        {
+          "title": "While Loops",
+          "body": "A while loop repeats while a condition is true.\n\nExample:\ncount = 1\nwhile count <= 5:\n    print(count)\n    count += 1\n\nPractice:\nCountdown from 10 to 1."
+        },
+        {
+          "title": "Nested Loops",
+          "body": "Loops can contain other loops.\n\nExample:\nPrint a multiplication table.\n\nChallenge:\nPrint star patterns:\n*\n**\n***\n****\n*****"
+        },
+        {
+          "title": "Debugging",
+          "body": "Common mistakes:\n- Infinite loops\n- Wrong indentation\n- Incorrect conditions\n- Off-by-one errors\n\nExercise:\nFind and fix five buggy examples."
+        },
+        {
+          "title": "Exercises",
+          "body": "Complete these programs:\n\n1. Number guessing.\n2. Password checker.\n3. ATM menu.\n4. Multiplication table.\n5. Prime number checker.\n6. Factorial.\n7. Fibonacci.\n8. Largest number.\n9. Smallest number.\n10. Average calculator."
+        },
+        {
+          "title": "Mini Project",
+          "body": "Mini Project\n\nBuild a Student Result System.\n\nFeatures:\n- Input marks\n- Calculate average\n- Assign grade\n- Show pass/fail\n- Repeat for many students"
+        },
+        {
+          "title": "Interview Questions",
+          "body": "Interview Practice\n\n1. Difference between if and while?\n2. When use for instead of while?\n3. Explain nested loops.\n4. What causes an infinite loop?\n5. Write a grade calculator."
+        }
+      ],
+      "quiz": [
+        "What is an if statement?",
+        "Difference between == and = ?",
+        "What does elif do?",
+        "When use while?",
+        "When use for?",
+        "What is a nested loop?"
+      ]
+    },
+    {
+      "id": 3,
+      "topic": "Functions",
+      "goal": "Learn to break programs into reusable, organized functions.",
+      "sections": [
+        {
+          "title": "Why Functions",
+          "body": "Functions let you reuse code instead of repeating it.\n\nBenefits:\n- Cleaner code\n- Easier testing\n- Easier maintenance\n\nExercise:\nList five repeated tasks that could become functions."
+        },
+        {
+          "title": "Defining Functions",
+          "body": "Example:\n\ndef greet():\n    print(\"Hello!\")\n\ngreet()\n\nPractice:\nCreate functions that print your name, city and favorite subject."
+        },
+        {
+          "title": "Parameters",
+          "body": "Parameters let functions receive information.\n\nExample:\n\ndef greet(name):\n    print(\"Hello\", name)\n\nPractice:\nCreate functions with 1, 2 and 3 parameters."
+        },
+        {
+          "title": "Return",
+          "body": "Return sends a value back.\n\nExample:\n\ndef add(a,b):\n    return a+b\n\nPractice:\nCreate functions for subtraction, multiplication and division."
+        },
+        {
+          "title": "Scope",
+          "body": "Variables may be local or global.\n\nUnderstand where variables can be accessed.\n\nExercise:\nPredict which variables exist inside and outside functions."
+        },
+        {
+          "title": "Lambda",
+          "body": "Lambda creates small anonymous functions.\n\nExample:\nsquare = lambda x: x*x\n\nPractice:\nCreate lambda functions for cube, even check and uppercase text."
+        },
+        {
+          "title": "Recursion",
+          "body": "A recursive function calls itself.\n\nAlways include a base case.\n\nPractice:\nDescribe how to calculate factorial recursively before writing code."
+        },
+        {
+          "title": "Debugging",
+          "body": "Common mistakes:\n- Missing return\n- Wrong parameter count\n- Infinite recursion\n- Name errors\n\nExercise:\nFix five broken function examples."
+        },
+        {
+          "title": "Exercises",
+          "body": "Exercises:\n1. Maximum of two numbers\n2. Minimum of three numbers\n3. Circle area\n4. Celsius to Fahrenheit\n5. Reverse text\n6. Count vowels\n7. Prime check\n8. Fibonacci\n9. Factorial\n10. Palindrome check"
+        },
+        {
+          "title": "Mini Project",
+          "body": "Mini Project\n\nStudent Utility\n\nFunctions:\n- add_student()\n- average()\n- highest_score()\n- lowest_score()\n- print_report()"
+        },
+        {
+          "title": "Interview",
+          "body": "Interview Questions\n\n1. Why use functions?\n2. Difference between parameter and argument?\n3. What does return do?\n4. What is recursion?\n5. What is variable scope?"
+        },
+        {
+          "title": "CheatSheet",
+          "body": "Cheat Sheet\n\ndef name():\n    ...\n\nreturn value\n\nparameter\nargument\nlocal variable\nglobal variable\nlambda\nrecursion"
+        },
+        {
+          "title": "Final Quiz",
+          "body": "Final Quiz\n\n1. Define a function.\n2. Why use parameters?\n3. Why use return?\n4. What is scope?\n5. What is recursion?\n6. When is lambda useful?"
+        }
+      ],
+      "quiz": []
+    },
+    {
+      "id": 4,
+      "topic": "Python Data Structures",
+      "goal": "Master Python collections and know when to use each one.",
+      "sections": [
+        {
+          "title": "Lists",
+          "body": "Lists are ordered and mutable.\n\nTopics:\n- Create\n- Access\n- Update\n- Delete\n- append()\n- insert()\n- extend()\n- remove()\n- pop()\n- clear()\n\nPractice:\nBuild a shopping list program."
+        },
+        {
+          "title": "Tuples",
+          "body": "Tuples are ordered but immutable.\n\nUse tuples for values that should not change.\n\nPractice:\nStore GPS coordinates and RGB colors."
+        },
+        {
+          "title": "Sets",
+          "body": "Sets store unique values.\n\nOperations:\n- add\n- remove\n- union\n- intersection\n- difference\n\nPractice:\nFind common students in two classes."
+        },
+        {
+          "title": "Dictionaries",
+          "body": "Dictionaries store key-value pairs.\n\nTopics:\n- keys\n- values\n- items\n- get\n- update\n\nPractice:\nCreate a student database."
+        },
+        {
+          "title": "List Comprehension",
+          "body": "Create lists efficiently.\n\nExample:\n[x*x for x in range(10)]\n\nPractice:\nGenerate squares, cubes and even numbers."
+        },
+        {
+          "title": "Nested Collections",
+          "body": "Collections can contain other collections.\n\nExamples:\n- List of dictionaries\n- Dictionary of lists\n\nPractice:\nDesign a classroom data model."
+        },
+        {
+          "title": "Sorting Searching",
+          "body": "Topics:\n- sorted()\n- sort()\n- reverse()\n- min()\n- max()\n- in operator\n\nPractice:\nSort students by score."
+        },
+        {
+          "title": "Debugging",
+          "body": "Common mistakes:\n- IndexError\n- KeyError\n- Wrong mutation\n- Duplicate assumptions\n\nExercise:\nFix five broken programs."
+        },
+        {
+          "title": "Exercises",
+          "body": "Exercises:\n1. Student database\n2. Inventory\n3. Contact book\n4. Shopping cart\n5. Attendance system\n6. Dictionary counter\n7. Word frequency\n8. Remove duplicates\n9. Score ranking\n10. Library catalog"
+        },
+        {
+          "title": "Big Project",
+          "body": "Big Project\n\nSchool Management System\n\nFeatures:\n- Students\n- Teachers\n- Subjects\n- Grades\n- Attendance\n- Reports\n\nUse lists, dictionaries and functions together."
+        },
+        {
+          "title": "Interview",
+          "body": "Interview:\n1. List vs Tuple?\n2. List vs Set?\n3. Why Dictionary?\n4. What is List Comprehension?\n5. When use nested collections?"
+        },
+        {
+          "title": "CheatSheet",
+          "body": "Cheat Sheet\n\nlist\ntuple\nset\ndict\n\nappend()\ninsert()\nremove()\npop()\nget()\nupdate()\nsorted()"
+        },
+        {
+          "title": "Final Exam",
+          "body": "Final Exam\n\nDesign a complete student management data model using:\n- Lists\n- Tuples\n- Sets\n- Dictionaries\n\nExplain why each structure was chosen."
+        }
+      ],
+      "quiz": []
+    },
+    {
+      "id": 5,
+      "topic": "Object-Oriented Programming (OOP)",
+      "goal": "Learn how to model real-world objects in Python.",
+      "sections": [
+        {
+          "title": "Classes Objects",
+          "body": "A class is a blueprint. An object is an instance of that blueprint.\nExercise: Design a Car class and create three objects."
+        },
+        {
+          "title": "Init Constructor",
+          "body": "The __init__ method initializes object data.\nPractice: Create a Student class with name, age and grade."
+        },
+        {
+          "title": "Attributes Methods",
+          "body": "Attributes store data. Methods define behavior.\nExercise: Add study() and introduce() methods to Student."
+        },
+        {
+          "title": "Encapsulation",
+          "body": "Keep internal data protected and expose only what is needed.\nExercise: Protect a bank account balance using methods."
+        },
+        {
+          "title": "Inheritance",
+          "body": "Inheritance lets one class reuse another.\nExample: Animal -> Dog.\nExercise: Build Vehicle -> Car -> ElectricCar."
+        },
+        {
+          "title": "Polymorphism",
+          "body": "Different classes can respond differently to the same method.\nExercise: Create Shape classes with area()."
+        },
+        {
+          "title": "Abstraction",
+          "body": "Hide unnecessary details behind a simple interface.\nExercise: Explain abstraction using a TV remote."
+        },
+        {
+          "title": "Magic Methods",
+          "body": "Learn __str__, __repr__, __len__, __eq__ and why they improve classes.\nExercise: Add __str__ to Student."
+        },
+        {
+          "title": "Composition",
+          "body": "Composition builds classes from other classes.\nExample: Car has an Engine.\nExercise: Design a Computer with CPU, RAM and Storage objects."
+        },
+        {
+          "title": "Debugging",
+          "body": "Common OOP bugs:\n- Missing self\n- Wrong inheritance\n- AttributeError\n- Shared mutable data\nFix five broken examples."
+        },
+        {
+          "title": "Exercises",
+          "body": "Exercises:\n1. Library\n2. Bank\n3. School\n4. Hospital\n5. Online Shop\nModel each with classes."
+        },
+        {
+          "title": "Big Project",
+          "body": "Big Project:\nBuild a School Management System using OOP with Student, Teacher, Course, Classroom and Report classes."
+        },
+        {
+          "title": "Interview",
+          "body": "Interview:\n1. Class vs Object?\n2. Encapsulation?\n3. Inheritance?\n4. Polymorphism?\n5. Composition vs Inheritance?"
+        },
+        {
+          "title": "CheatSheet",
+          "body": "Cheat Sheet:\nclass\nobject\n__init__\nself\ninheritance\npolymorphism\nencapsulation\nabstraction\ncomposition"
+        },
+        {
+          "title": "Final Exam",
+          "body": "Final Exam:\nDesign an OOP architecture for an AI Tutor using at least 8 interacting classes and explain your design choices."
+        }
+      ],
+      "quiz": []
+    },
+    {
+      "id": 6,
+      "topic": "Files, JSON, CSV, Modules & SQLite",
+      "goal": "Learn persistent data storage.",
+      "sections": [
+        {
+          "title": "File Handling",
+          "body": "Learn open(), read(), write(), append(), with.\nPractice: Create a diary application."
+        },
+        {
+          "title": "Text Files",
+          "body": "Read and write text files safely.\nExercise: Count lines, words and characters in a file."
+        },
+        {
+          "title": "CSV",
+          "body": "CSV stores tabular data.\nPractice: Save student marks and read them back."
+        },
+        {
+          "title": "JSON",
+          "body": "JSON stores structured data.\nTopics: json.load(), json.dump().\nPractice: Save user settings."
+        },
+        {
+          "title": "Modules Packages",
+          "body": "Split projects into reusable modules.\nLearn import, from, packages and __name__."
+        },
+        {
+          "title": "Virtual Environment",
+          "body": "Create isolated Python environments using venv.\nPractice: Create and activate a virtual environment."
+        },
+        {
+          "title": "SQLite",
+          "body": "SQLite is a lightweight database.\nLearn CREATE TABLE, INSERT, SELECT, UPDATE, DELETE.\nBuild a contacts database."
+        },
+        {
+          "title": "Logging Config",
+          "body": "Use logging instead of print for applications.\nStore configuration in JSON files."
+        },
+        {
+          "title": "Debugging",
+          "body": "Common errors:\nFileNotFoundError\nPermissionError\nJSONDecodeError\nSQLite errors\nFix sample bugs."
+        },
+        {
+          "title": "Exercises",
+          "body": "Exercises:\n1. Notes app\n2. Password vault\n3. Inventory\n4. Student records\n5. Expense tracker"
+        },
+        {
+          "title": "Big Project",
+          "body": "Big Project:\nBuild a Library Management System using files, JSON and SQLite with CRUD operations."
+        },
+        {
+          "title": "Interview",
+          "body": "Interview:\n1. File vs Database?\n2. Why JSON?\n3. What is CSV?\n4. Why modules?\n5. Why virtual environments?"
+        },
+        {
+          "title": "CheatSheet",
+          "body": "Cheat Sheet:\nopen()\nwith\njson.load\njson.dump\ncsv\nsqlite3\nimport\nvenv\nlogging"
+        },
+        {
+          "title": "Final Exam",
+          "body": "Final Exam:\nDesign a personal finance manager using files, JSON, modules and SQLite. Explain the architecture."
+        }
+      ],
+      "quiz": []
+    },
+    {
+      "id": 7,
+      "topic": "Python Advanced",
+      "goal": "Learn advanced Python features used in professional software.",
+      "sections": [
+        {
+          "title": "Decorators",
+          "body": "Decorators modify function behavior without changing its source.\nPractice: Create a decorator that logs function calls."
+        },
+        {
+          "title": "Iterators",
+          "body": "Iterators produce one value at a time using __iter__() and __next__().\nPractice: Build a custom counter iterator."
+        },
+        {
+          "title": "Generators",
+          "body": "Generators use yield to create efficient data streams.\nPractice: Generate Fibonacci numbers lazily."
+        },
+        {
+          "title": "Context Managers",
+          "body": "Context managers manage resources safely.\nLearn with and __enter__/__exit__.\nPractice: Create a custom timer context manager."
+        },
+        {
+          "title": "Regex",
+          "body": "Regular Expressions search and validate text.\nTopics: search, match, findall, groups.\nPractice: Validate email addresses and phone numbers."
+        },
+        {
+          "title": "Threading",
+          "body": "Threads allow concurrent execution for I/O tasks.\nPractice: Download multiple files concurrently (conceptually)."
+        },
+        {
+          "title": "Multiprocessing",
+          "body": "Multiprocessing uses multiple CPU cores.\nCompare it with threading.\nPractice: Parallel number calculations."
+        },
+        {
+          "title": "Asyncio",
+          "body": "Async programming handles many waiting tasks efficiently.\nLearn async, await and event loops.\nPractice: Simulate asynchronous API calls."
+        },
+        {
+          "title": "Networking",
+          "body": "Learn sockets, HTTP requests and basic client-server communication concepts.\nPractice: Design a simple chat protocol."
+        },
+        {
+          "title": "Performance",
+          "body": "Profile code before optimizing.\nTopics: timeit, cProfile, memory usage.\nPractice: Compare two algorithms."
+        },
+        {
+          "title": "Debugging",
+          "body": "Debug advanced issues: race conditions, deadlocks, async mistakes and regex bugs.\nFix sample problems."
+        },
+        {
+          "title": "Exercises",
+          "body": "Exercises:\n1. Log decorator\n2. Generator pipeline\n3. Async downloader\n4. Regex parser\n5. Context manager\n6. Thread pool\n7. Process pool"
+        },
+        {
+          "title": "Big Project",
+          "body": "Big Project:\nDesign a concurrent file indexing system using generators, regex, threading and asyncio."
+        },
+        {
+          "title": "Interview",
+          "body": "Interview:\n1. Decorator vs wrapper?\n2. Iterator vs generator?\n3. Threading vs multiprocessing?\n4. Why asyncio?\n5. What is a context manager?"
+        },
+        {
+          "title": "CheatSheet",
+          "body": "Cheat Sheet:\n@decorator\nyield\niter\nnext\nwith\nre\nthreading\nmultiprocessing\nasync\nawait"
+        },
+        {
+          "title": "Final Exam",
+          "body": "Final Exam:\nDesign a scalable log analysis application using advanced Python techniques and explain each design choice."
+        }
+      ],
+      "quiz": []
+    },
+    {
+      "id": 8,
+      "topic": "Python for AI & Data Science",
+      "goal": "Use Python to analyze data and build simple AI models.",
+      "sections": [
+        {
+          "title": "NumPy",
+          "body": "NumPy provides fast numerical arrays.\nTopics: arrays, indexing, broadcasting.\nPractice: Create vectors and matrices."
+        },
+        {
+          "title": "Pandas",
+          "body": "Pandas works with tables.\nTopics: DataFrame, Series, read_csv, filtering, grouping.\nPractice: Analyze student scores."
+        },
+        {
+          "title": "Data Cleaning",
+          "body": "Real data is messy.\nLearn handling missing values, duplicates and incorrect formats.\nPractice: Clean a sample dataset."
+        },
+        {
+          "title": "Data Visualization",
+          "body": "Use Matplotlib to create line, bar and scatter charts.\nPractice: Visualize monthly sales."
+        },
+        {
+          "title": "Feature Engineering",
+          "body": "Prepare data before training.\nTopics: encoding, scaling, feature selection.\nPractice: Transform a dataset for ML."
+        },
+        {
+          "title": "Scikit Learn",
+          "body": "Train models using scikit-learn.\nTopics: train/test split, fit, predict.\nPractice: Predict exam results."
+        },
+        {
+          "title": "Model Evaluation",
+          "body": "Measure quality with accuracy, precision, recall and confusion matrix.\nPractice: Compare two models."
+        },
+        {
+          "title": "Intro TensorFlow PyTorch",
+          "body": "Neural-network frameworks for deep learning.\nUnderstand tensors, models and training workflow."
+        },
+        {
+          "title": "Debugging",
+          "body": "Common issues: shape mismatch, missing values, overfitting and data leakage.\nFix sample problems."
+        },
+        {
+          "title": "Exercises",
+          "body": "Exercises:\n1. Analyze CSV\n2. Plot charts\n3. Clean data\n4. Train classifier\n5. Evaluate model"
+        },
+        {
+          "title": "Big Project",
+          "body": "Big Project:\nBuild a Student Performance Predictor from data collection to evaluation."
+        },
+        {
+          "title": "Interview",
+          "body": "Interview:\n1. NumPy vs Pandas?\n2. What is a feature?\n3. Why split data?\n4. What is overfitting?\n5. Why evaluate models?"
+        },
+        {
+          "title": "CheatSheet",
+          "body": "Cheat Sheet:\nnumpy\npandas\nmatplotlib\nscikit-learn\nfit\npredict\nDataFrame\nSeries"
+        },
+        {
+          "title": "Final Exam",
+          "body": "Final Exam:\nDesign an end-to-end ML pipeline including data collection, cleaning, training, evaluation and deployment."
+        }
+      ],
+      "quiz": []
+    },
+    {
+      "id": 9,
+      "topic": "Python Backend Development",
+      "goal": "Build professional backend APIs.",
+      "sections": [
+        {
+          "title": "HTTP REST",
+          "body": "Learn HTTP methods (GET, POST, PUT, DELETE), status codes and REST principles.\nPractice: Design an API for a Notes app."
+        },
+        {
+          "title": "FastAPI",
+          "body": "Create APIs using FastAPI.\nTopics: routing, request validation, response models.\nPractice: Build a Hello API."
+        },
+        {
+          "title": "Flask",
+          "body": "Understand Flask basics and compare Flask with FastAPI.\nPractice: Build a simple blog API."
+        },
+        {
+          "title": "Authentication",
+          "body": "Authentication with JWT and OAuth concepts.\nPractice: Design login and refresh-token flow."
+        },
+        {
+          "title": "CRUD API",
+          "body": "Implement Create, Read, Update and Delete operations.\nPractice: Student Management API."
+        },
+        {
+          "title": "Database",
+          "body": "Use PostgreSQL with SQLAlchemy ORM.\nTopics: models, relationships, migrations."
+        },
+        {
+          "title": "WebSockets",
+          "body": "Build real-time communication.\nExamples: chat and notifications.\nPractice: Design a chat backend."
+        },
+        {
+          "title": "Background Tasks",
+          "body": "Run email sending, reports and image processing in the background.\nPractice: Queue welcome emails."
+        },
+        {
+          "title": "File Uploads",
+          "body": "Handle secure file uploads, validation and storage.\nPractice: Avatar upload endpoint."
+        },
+        {
+          "title": "Testing",
+          "body": "Test APIs with pytest and TestClient.\nWrite unit and integration tests."
+        },
+        {
+          "title": "Docker Deploy",
+          "body": "Package backend with Docker and deploy to a cloud service.\nPractice: Write a deployment checklist."
+        },
+        {
+          "title": "Debugging",
+          "body": "Debug HTTP errors, database issues, authentication failures and validation errors."
+        },
+        {
+          "title": "Big Project",
+          "body": "Big Project: Build the complete backend for an AI Assistant with users, chat, memory, file upload, authentication and PostgreSQL."
+        },
+        {
+          "title": "Interview",
+          "body": "Interview: REST vs GraphQL? Why JWT? Why ORM? FastAPI vs Flask? WebSockets use cases?"
+        },
+        {
+          "title": "CheatSheet",
+          "body": "Cheat Sheet: HTTP, REST, FastAPI, Flask, JWT, CRUD, SQLAlchemy, WebSockets, Docker."
+        },
+        {
+          "title": "Final Exam",
+          "body": "Final Exam: Design a scalable backend architecture for an AI application serving one million users."
+        }
+      ],
+      "quiz": []
+    },
+    {
+      "id": 10,
+      "topic": "AI Backend Engineering",
+      "goal": "Build production-ready AI backend services.",
+      "sections": [
+        {
+          "title": "LLM APIs",
+          "body": "Learn how backend services communicate with LLM APIs.\nTopics: prompts, tokens, streaming, rate limits.\nExercise: Design an AI chat endpoint."
+        },
+        {
+          "title": "HuggingFace",
+          "body": "Use Hugging Face models for inference.\nUnderstand pipelines, tokenizers and model loading."
+        },
+        {
+          "title": "Local Models",
+          "body": "Run local models using Ollama or vLLM concepts.\nCompare local vs cloud deployment."
+        },
+        {
+          "title": "RAG",
+          "body": "Production RAG pipeline:\nDocuments -> Chunking -> Embeddings -> Vector DB -> Retrieval -> LLM.\nPractice: Design a document assistant."
+        },
+        {
+          "title": "Vector Databases",
+          "body": "Compare FAISS, Chroma and Qdrant.\nLearn indexing and semantic search."
+        },
+        {
+          "title": "AI Agents",
+          "body": "Build agents that plan, use tools and complete tasks.\nPractice: Design an AI coding assistant."
+        },
+        {
+          "title": "Memory",
+          "body": "Implement conversation memory and user profiles.\nDiscuss short-term and long-term memory."
+        },
+        {
+          "title": "Streaming",
+          "body": "Return AI responses token by token for better UX.\nUnderstand server-sent events and WebSockets."
+        },
+        {
+          "title": "Deployment",
+          "body": "Deploy AI backends with Docker, GPU support, monitoring and autoscaling."
+        },
+        {
+          "title": "Monitoring",
+          "body": "Track latency, token usage, failures and costs.\nCreate dashboards and alerts."
+        },
+        {
+          "title": "Debugging",
+          "body": "Debug prompt issues, retrieval failures, model errors and API timeouts."
+        },
+        {
+          "title": "Big Project",
+          "body": "Big Project: Build the complete Superior AI Backend with authentication, RAG, agents, memory, vector database and streaming chat."
+        },
+        {
+          "title": "Interview",
+          "body": "Interview: RAG vs Fine-tuning? Local vs Cloud LLM? Why vector DB? What is streaming?"
+        },
+        {
+          "title": "CheatSheet",
+          "body": "Cheat Sheet: LLM, RAG, Embeddings, Vector DB, Agents, SSE, WebSockets, Docker."
+        },
+        {
+          "title": "Final Exam",
+          "body": "Final Exam: Design a scalable AI backend capable of serving millions of requests with monitoring, caching and fault tolerance."
+        }
+      ],
+      "quiz": []
+    },
+    {
+      "id": 11,
+      "topic": "Flutter + AI Development",
+      "goal": "Build modern AI-powered mobile applications.",
+      "sections": [
+        {
+          "title": "Project Architecture",
+          "body": "Learn a scalable Flutter folder structure: lib/, models/, services/, providers/, screens/, widgets/, utils/.\nExercise: Design the structure for an AI chat app."
+        },
+        {
+          "title": "Chat UI",
+          "body": "Create a chat interface with message bubbles, typing indicator, markdown rendering and conversation history.\nPractice: Sketch the screen."
+        },
+        {
+          "title": "API Integration",
+          "body": "Connect Flutter to a backend using HTTP and streaming responses.\nTopics: REST, JSON, authentication tokens."
+        },
+        {
+          "title": "State Management",
+          "body": "Compare Provider, Riverpod and Bloc.\nChoose one architecture and explain why."
+        },
+        {
+          "title": "Voice Features",
+          "body": "Integrate Speech-to-Text and Text-to-Speech.\nDesign a voice conversation flow."
+        },
+        {
+          "title": "Image AI",
+          "body": "Connect camera/gallery, OCR and image understanding.\nDesign an image analysis feature."
+        },
+        {
+          "title": "Local Storage",
+          "body": "Cache conversations locally using SQLite or Hive.\nSupport offline history."
+        },
+        {
+          "title": "Authentication",
+          "body": "Implement secure login with JWT, refresh tokens and biometric authentication concepts."
+        },
+        {
+          "title": "Notifications",
+          "body": "Use push notifications for reminders and AI task completion.\nDesign notification categories."
+        },
+        {
+          "title": "Performance",
+          "body": "Optimize Flutter apps: lazy loading, image caching, pagination, profiling and reducing rebuilds."
+        },
+        {
+          "title": "Testing Debugging",
+          "body": "Widget tests, integration tests and debugging network/API issues."
+        },
+        {
+          "title": "Big Project",
+          "body": "Build the complete Superior AI mobile app with chat, voice, image analysis, authentication, local cache and backend integration."
+        },
+        {
+          "title": "Interview",
+          "body": "Interview: Why Flutter? Provider vs Riverpod? Offline-first? Streaming responses? State management?"
+        },
+        {
+          "title": "CheatSheet",
+          "body": "Cheat Sheet: Flutter widgets, navigation, HTTP, Provider, Riverpod, Hive, SQLite, JWT, OCR."
+        },
+        {
+          "title": "Final Exam",
+          "body": "Final Exam: Design a production-ready AI mobile application architecture including UI, backend, caching, security and deployment."
+        }
+      ],
+      "quiz": []
+    },
+    {
+      "id": 12,
+      "topic": "AI Full Stack Engineering",
+      "goal": "Connect frontend, backend, databases and DevOps into one production system.",
+      "sections": [
+        {
+          "title": "System Overview",
+          "body": "Understand the complete architecture:\nFlutter -> API Gateway -> FastAPI -> PostgreSQL -> Redis -> Object Storage -> AI Services.\nExercise: Draw the architecture."
+        },
+        {
+          "title": "Flutter Backend",
+          "body": "Connect Flutter to FastAPI using REST and JWT.\nPractice: Design login, profile and chat flows."
+        },
+        {
+          "title": "PostgreSQL Redis",
+          "body": "Use PostgreSQL for permanent data and Redis for caching and sessions.\nExercise: Decide what belongs in each."
+        },
+        {
+          "title": "Object Storage",
+          "body": "Store images, videos and documents in object storage such as Cloudflare R2.\nPractice: Design upload and download flow."
+        },
+        {
+          "title": "Docker Compose",
+          "body": "Run multiple services together with Docker Compose.\nServices: app, db, redis, nginx.\nExercise: Draw service communication."
+        },
+        {
+          "title": "Nginx Reverse Proxy",
+          "body": "Use Nginx for HTTPS, routing and load balancing.\nPractice: Explain how a reverse proxy works."
+        },
+        {
+          "title": "CICD",
+          "body": "Automate testing and deployment with GitHub Actions.\nTypical flow: Commit -> Test -> Build -> Deploy."
+        },
+        {
+          "title": "Monitoring",
+          "body": "Monitor uptime, CPU, RAM, latency and errors using Prometheus and Grafana concepts."
+        },
+        {
+          "title": "Microservices",
+          "body": "Split large systems into services: auth, chat, AI, notifications, payments.\nDiscuss advantages and trade-offs."
+        },
+        {
+          "title": "Security",
+          "body": "Topics: HTTPS, JWT, secrets management, rate limiting, backups and least privilege."
+        },
+        {
+          "title": "Scaling",
+          "body": "Scale horizontally with multiple instances and load balancers.\nPractice: Design for one million users."
+        },
+        {
+          "title": "Debugging",
+          "body": "Debug deployment failures, Docker networking, database connections and API timeouts."
+        },
+        {
+          "title": "Big Project",
+          "body": "Big Project: Design the complete Superior AI platform with Flutter, FastAPI, PostgreSQL, Redis, R2, Docker, CI/CD, monitoring and production deployment."
+        },
+        {
+          "title": "Interview",
+          "body": "Interview: Why Redis? Why Docker? Monolith vs Microservices? Reverse proxy? CI/CD?"
+        },
+        {
+          "title": "CheatSheet",
+          "body": "Cheat Sheet: FastAPI, Flutter, PostgreSQL, Redis, Docker, Compose, Nginx, JWT, CI/CD."
+        },
+        {
+          "title": "Final Exam",
+          "body": "Final Exam: Produce a production-ready architecture for a global AI platform including scalability, security, observability and disaster recovery."
+        }
+      ],
+      "quiz": []
+    },
+    {
+      "id": 13,
+      "topic": "AI Engineering Masterclass",
+      "goal": "Understand how modern large language models are built, optimized and deployed.",
+      "sections": [
+        {
+          "title": "Transformers",
+          "body": "Learn why the Transformer architecture replaced many older neural-network designs. Study encoder, decoder and self-attention at a high level."
+        },
+        {
+          "title": "Attention",
+          "body": "Attention helps a model focus on the most relevant information in the input. Compare self-attention and cross-attention."
+        },
+        {
+          "title": "Tokenization",
+          "body": "Understand tokens, tokenizers, context windows and why different models count tokens differently."
+        },
+        {
+          "title": "Embeddings",
+          "body": "Embeddings convert text into vectors that capture semantic meaning. Explore similarity search and cosine similarity concepts."
+        },
+        {
+          "title": "Fine Tuning",
+          "body": "Compare prompt engineering, RAG and fine-tuning. Learn supervised fine-tuning workflow and common use cases."
+        },
+        {
+          "title": "LoRA QLoRA",
+          "body": "Study parameter-efficient fine-tuning with LoRA and QLoRA. Understand why they reduce hardware requirements."
+        },
+        {
+          "title": "RLHF",
+          "body": "Learn the idea behind Reinforcement Learning from Human Feedback and why preference data improves model behavior."
+        },
+        {
+          "title": "Model Optimization",
+          "body": "Topics: quantization, batching, KV cache, model serving, GPU memory optimization and inference speed."
+        },
+        {
+          "title": "vLLM and Deployment",
+          "body": "Understand production inference with vLLM, load balancing, autoscaling, monitoring and rolling updates."
+        },
+        {
+          "title": "Benchmarking",
+          "body": "Measure latency, throughput, accuracy, cost and reliability. Learn why benchmarks should match real workloads."
+        },
+        {
+          "title": "Debugging",
+          "body": "Investigate hallucinations, context overflow, prompt failures, retrieval failures and deployment issues."
+        },
+        {
+          "title": "Big Project",
+          "body": "Big Project: Design an enterprise-grade LLM platform including API gateway, model serving, RAG, vector database, monitoring, evaluation and security."
+        },
+        {
+          "title": "Interview",
+          "body": "Interview: Transformer vs RNN? What is attention? Why embeddings? RAG vs Fine-tuning? Why LoRA? Why quantization?"
+        },
+        {
+          "title": "CheatSheet",
+          "body": "Cheat Sheet: Transformer, Attention, Tokens, Embeddings, LoRA, RLHF, Quantization, vLLM, RAG, Benchmarking."
+        },
+        {
+          "title": "Final Exam",
+          "body": "Final Exam: Design a complete production LLM architecture serving millions of users while balancing latency, cost, safety and reliability."
+        }
+      ],
+      "quiz": []
+    },
+    {
+      "id": 14,
+      "topic": "Building Your Own AI Model",
+      "goal": "Understand the complete lifecycle of creating an AI model.",
+      "sections": [
+        {
+          "title": "Dataset Collection",
+          "body": "Learn how to collect high-quality datasets.\nTopics:\n- Public datasets\n- Licensing\n- Diversity\n- Data quality\n\nExercise:\nDesign a dataset for an AI math tutor."
+        },
+        {
+          "title": "Data Cleaning",
+          "body": "Remove duplicates, fix formatting, detect missing values and improve data quality.\n\nExercise:\nCreate a checklist for cleaning a dataset."
+        },
+        {
+          "title": "Data Labeling",
+          "body": "Labels teach supervised models.\n\nTopics:\n- Manual labeling\n- Human review\n- Quality checks\n\nExercise:\nDesign labels for image classification."
+        },
+        {
+          "title": "Tokenizer Training",
+          "body": "Understand how tokenizers split text.\n\nTopics:\n- Vocabulary\n- Byte Pair Encoding\n- SentencePiece\n- Context length\n\nExercise:\nCompare words and tokens."
+        },
+        {
+          "title": "Pretraining",
+          "body": "Pretraining teaches general language knowledge.\n\nLearn:\n- Objectives\n- Compute requirements\n- Checkpoints\n\nExercise:\nExplain why large datasets matter."
+        },
+        {
+          "title": "Fine Tuning",
+          "body": "Adapt a pretrained model to a specific task.\n\nTopics:\n- Instruction tuning\n- Domain adaptation\n- Evaluation\n\nExercise:\nPlan a fine-tuning project."
+        },
+        {
+          "title": "Evaluation",
+          "body": "Measure model quality.\n\nMetrics:\n- Accuracy\n- Precision\n- Recall\n- F1\n- Human evaluation\n\nExercise:\nChoose metrics for a chatbot."
+        },
+        {
+          "title": "Safety Testing",
+          "body": "Test for harmful outputs, bias, privacy risks and prompt attacks.\n\nExercise:\nCreate a safety checklist."
+        },
+        {
+          "title": "MLOps",
+          "body": "Learn model versioning, experiment tracking, deployment and monitoring.\n\nExercise:\nDraw an MLOps pipeline."
+        },
+        {
+          "title": "Distributed Training",
+          "body": "Introduction to multi-GPU and distributed training.\n\nTopics:\n- Data parallelism\n- Model parallelism\n- Checkpointing"
+        },
+        {
+          "title": "Debugging",
+          "body": "Investigate:\n- Bad data\n- Overfitting\n- Underfitting\n- Training instability\n- Evaluation mistakes"
+        },
+        {
+          "title": "Big Project",
+          "body": "Big Project:\n\nDesign the complete lifecycle for an AI model:\nDataset -> Cleaning -> Training -> Fine-tuning -> Evaluation -> Deployment -> Monitoring."
+        },
+        {
+          "title": "Interview",
+          "body": "Interview:\n1. Why clean data?\n2. Why fine-tune?\n3. What is MLOps?\n4. What is overfitting?\n5. Why evaluate models?"
+        },
+        {
+          "title": "CheatSheet",
+          "body": "Cheat Sheet:\nDataset\nLabels\nTokenizer\nPretraining\nFine-tuning\nEvaluation\nMLOps\nMonitoring"
+        },
+        {
+          "title": "Final Exam",
+          "body": "Final Exam:\n\nDesign a production-ready roadmap for building and releasing an AI model, including data, infrastructure, safety and maintenance."
+        }
+      ],
+      "quiz": []
+    },
+    {
+      "id": 15,
+      "topic": "AI Startup & Product Engineering",
+      "goal": "Learn how to turn an AI idea into a successful product and business.",
+      "sections": [
+        {
+          "title": "Product Strategy",
+          "body": "Identify a real problem, define target users, validate demand, and write a clear value proposition.\nExercise: Create a one-page product vision."
+        },
+        {
+          "title": "AI UX UI",
+          "body": "Design AI interfaces that are simple, transparent and helpful. Include onboarding, chat, voice and feedback."
+        },
+        {
+          "title": "Monetization",
+          "body": "Business models: subscription, usage-based pricing, freemium, enterprise licensing and marketplace fees."
+        },
+        {
+          "title": "SaaS Architecture",
+          "body": "Understand multi-tenant SaaS, authentication, billing, usage tracking and account management."
+        },
+        {
+          "title": "Payments",
+          "body": "Topics: payment providers, subscriptions, invoices, refunds and webhook concepts."
+        },
+        {
+          "title": "Analytics",
+          "body": "Measure DAU, MAU, retention, churn, conversion, engagement and revenue."
+        },
+        {
+          "title": "AB Testing",
+          "body": "Compare two product versions, define success metrics and analyze results."
+        },
+        {
+          "title": "Growth",
+          "body": "Growth loops, referrals, onboarding, SEO, content marketing and community building."
+        },
+        {
+          "title": "Retention",
+          "body": "Increase retention with notifications, personalization, habit formation and continuous improvements."
+        },
+        {
+          "title": "Security Compliance",
+          "body": "Topics: privacy, data protection, permissions, auditing and compliance basics."
+        },
+        {
+          "title": "Launch",
+          "body": "Prepare launch checklist: beta testing, documentation, monitoring, support and rollback plan."
+        },
+        {
+          "title": "Debugging",
+          "body": "Analyze product failures: low retention, poor onboarding, pricing mistakes and performance issues."
+        },
+        {
+          "title": "Big Project",
+          "body": "Big Project: Design a complete global AI SaaS business including product roadmap, pricing, growth strategy, analytics, infrastructure and launch plan."
+        },
+        {
+          "title": "Interview",
+          "body": "Interview: MVP vs full product? Why analytics? Why retention? What is SaaS? How do you validate demand?"
+        },
+        {
+          "title": "CheatSheet",
+          "body": "Cheat Sheet: MVP, SaaS, KPI, DAU, MAU, Churn, LTV, CAC, A/B Test, Retention."
+        },
+        {
+          "title": "Final Exam",
+          "body": "Final Exam: Create a complete business and engineering plan for launching an AI platform from idea to worldwide production."
+        }
+      ],
+      "quiz": []
+    },
+    {
+      "id": 16,
+      "topic": "Capstone Project - Superior AI",
+      "goal": "Combine everything learned into one production-ready AI platform.",
+      "sections": [
+        {
+          "title": "Project Vision",
+          "body": "Define the mission, target users, unique value and success metrics for Superior AI."
+        },
+        {
+          "title": "System Architecture",
+          "body": "Design the complete architecture: Flutter, Web, API Gateway, AI Services, PostgreSQL, Redis, Object Storage, Monitoring."
+        },
+        {
+          "title": "Frontend",
+          "body": "Design chat UI, voice UI, image analysis, authentication, settings and offline mode."
+        },
+        {
+          "title": "Backend",
+          "body": "Design FastAPI services, authentication, REST APIs, WebSockets, background workers and caching."
+        },
+        {
+          "title": "AI Layer",
+          "body": "Plan LLM integration, RAG, vector database, agents, memory and tool calling."
+        },
+        {
+          "title": "Data Layer",
+          "body": "Design PostgreSQL schema, Redis cache, object storage and backup strategy."
+        },
+        {
+          "title": "DevOps",
+          "body": "Deployment using Docker, CI/CD, monitoring, logging, scaling and disaster recovery."
+        },
+        {
+          "title": "Security",
+          "body": "Authentication, authorization, secrets, encryption, auditing and rate limiting."
+        },
+        {
+          "title": "Testing",
+          "body": "Create unit, integration, end-to-end and load testing strategies."
+        },
+        {
+          "title": "Roadmap",
+          "body": "Plan MVP, Beta, Version 1.0, enterprise edition and global scaling milestones."
+        },
+        {
+          "title": "Documentation",
+          "body": "Prepare README, API docs, architecture diagrams, onboarding and contribution guides."
+        },
+        {
+          "title": "Big Project",
+          "body": "Capstone: Produce a complete blueprint for Superior AI covering product, engineering, AI, operations and business."
+        },
+        {
+          "title": "Interview",
+          "body": "Review architecture, scalability, AI, security and product questions."
+        },
+        {
+          "title": "CheatSheet",
+          "body": "Summary of architecture, APIs, databases, AI pipeline, deployment and monitoring."
+        },
+        {
+          "title": "Final Exam",
+          "body": "Design a production AI platform capable of serving millions of users with high availability, observability and security."
+        }
+      ],
+      "quiz": []
+    }
+  ]
+}

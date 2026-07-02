@@ -1,61 +1,71 @@
 import 'package:flutter/material.dart';
 import '../models/academy.dart';
+import '../theme.dart';
 import 'lesson_screen.dart';
 import 'tutor_screen.dart';
 
-/// Superior AI Academy — рӯйхати курсҳо (қисмҳо).
+/// Superior AI Academy — рӯйхати курсҳо (volume-ҳо ва қисмҳо).
 class AcademyScreen extends StatelessWidget {
   const AcademyScreen({super.key});
 
-  static const _icons = {
-    'Recursion': Icons.repeat,
-    'Sorting Algorithms': Icons.sort,
-    'Software Architecture': Icons.account_tree_outlined,
-    'Database Fundamentals': Icons.storage,
-    'System Design Fundamentals': Icons.hub_outlined,
-  };
+  static IconData _iconFor(String topic) {
+    final t = topic.toLowerCase();
+    if (t.contains('python')) return Icons.code;
+    if (t.contains('recursion')) return Icons.repeat;
+    if (t.contains('sort')) return Icons.sort;
+    if (t.contains('architecture')) return Icons.account_tree_outlined;
+    if (t.contains('database') || t.contains('sql')) return Icons.storage;
+    if (t.contains('system design')) return Icons.hub_outlined;
+    if (t.contains('oop') || t.contains('object')) return Icons.category_outlined;
+    if (t.contains('data') || t.contains('science')) return Icons.analytics_outlined;
+    if (t.contains('backend')) return Icons.dns_outlined;
+    if (t.contains('flutter') || t.contains('full')) return Icons.phone_iphone;
+    if (t.contains('model') || t.contains('engineering')) return Icons.smart_toy_outlined;
+    if (t.contains('startup') || t.contains('product')) return Icons.rocket_launch_outlined;
+    if (t.contains('capstone')) return Icons.emoji_events_outlined;
+    if (t.contains('function')) return Icons.functions;
+    if (t.contains('condition') || t.contains('loop')) return Icons.loop;
+    if (t.contains('file') || t.contains('json')) return Icons.folder_outlined;
+    return Icons.menu_book_outlined;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A0A0A),
-        elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text('Superior Academy',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+        title: const Text('Superior Academy'),
       ),
-      body: FutureBuilder<Course>(
-        future: Course.load(),
+      body: FutureBuilder<List<Course>>(
+        future: Course.loadAll(),
         builder: (context, snap) {
           if (snap.connectionState != ConnectionState.done) {
-            return const Center(
-              child: CircularProgressIndicator(color: Color(0xFFF59E0B)),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
-          if (snap.hasError || !snap.hasData) {
+          final courses = snap.data ?? [];
+          if (courses.isEmpty) {
             return const Center(
               child: Text('Курс бор нашуд',
-                  style: TextStyle(color: Color(0xFF8E8EA0))),
+                  style: TextStyle(color: AppColors.textSecondary)),
             );
           }
-          final course = snap.data!;
+          final totalLessons = courses.fold<int>(
+              0, (s, c) => s + c.parts.fold<int>(0, (x, p) => x + p.lessons.length));
+
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              _buildTeacherBanner(context),
-              const SizedBox(height: 20),
-              Text('${course.title} • ${course.parts.length} мавзӯъ',
-                  style: const TextStyle(
-                      color: Color(0xFF8E8EA0),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600)),
-              const SizedBox(height: 12),
-              ...course.parts.map((p) => _buildPartCard(context, p)),
+              _teacherBanner(context, totalLessons),
+              const SizedBox(height: 24),
+              for (final course in courses) ...[
+                _volumeHeader(course),
+                const SizedBox(height: 12),
+                ...course.parts.map((p) => _partCard(context, p)),
+                const SizedBox(height: 20),
+              ],
             ],
           );
         },
@@ -63,41 +73,52 @@ class AcademyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTeacherBanner(BuildContext context) {
+  Widget _teacherBanner(BuildContext context, int totalLessons) {
     return GestureDetector(
       onTap: () => Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (_) => const TutorScreen(
-            title: 'Superior Teacher',
-            opening: null,
-          ),
-        ),
+        MaterialPageRoute(builder: (_) => const TutorScreen()),
       ),
       child: Container(
-        padding: const EdgeInsets.all(18),
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xFFF59E0B), Color(0xFFEF4444)],
+            colors: [AppColors.teacher, Color(0xFFEF4444)],
           ),
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.teacher.withOpacity(0.25),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
+            ),
+          ],
         ),
         child: Row(
           children: [
-            const Icon(Icons.school, color: Colors.white, size: 32),
-            const SizedBox(width: 14),
-            const Expanded(
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: const Icon(Icons.school, color: Colors.white, size: 28),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Аз муаллим бипурс',
+                  const Text('Аз муаллим бипурс',
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 17,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold)),
-                  SizedBox(height: 4),
-                  Text('Ҳар мавзӯъро ба шумо ёд медиҳам',
-                      style: TextStyle(color: Colors.white70, fontSize: 13)),
+                  const SizedBox(height: 4),
+                  Text('$totalLessons дарс • ҳама чизро ёд медиҳам',
+                      style: const TextStyle(
+                          color: Colors.white, fontSize: 13)),
                 ],
               ),
             ),
@@ -108,63 +129,89 @@ class AcademyScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildPartCard(BuildContext context, CoursePart p) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: GestureDetector(
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => LessonScreen(part: p)),
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(16),
+  Widget _volumeHeader(Course c) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
-            color: const Color(0xFF171717),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFF2A2A2A)),
+            color: AppColors.teacher.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(8),
           ),
-          child: Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF59E0B).withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(14),
+          child: Text('Volume ${c.volume}',
+              style: const TextStyle(
+                  color: AppColors.teacher,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold)),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            c.title.replaceFirst(RegExp(r'.*—\s*'), ''),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 13,
+                fontWeight: FontWeight.w600),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _partCard(BuildContext context, CoursePart p) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 10),
+      child: Material(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => LessonScreen(part: p)),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(AppRadius.md),
+              border: Border.all(color: AppColors.border),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 46,
+                  height: 46,
+                  decoration: BoxDecoration(
+                    color: AppColors.teacher.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(_iconFor(p.topic),
+                      color: AppColors.teacher, size: 22),
                 ),
-                child: Icon(_icons[p.topic] ?? Icons.menu_book,
-                    color: const Color(0xFFF59E0B), size: 24),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(p.topic,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600)),
-                    const SizedBox(height: 4),
-                    Text(
-                      p.goal.isEmpty
-                          ? '${p.lessons.length} дарс'
-                          : p.goal,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                          color: Color(0xFF8E8EA0), fontSize: 13, height: 1.3),
-                    ),
-                    const SizedBox(height: 6),
-                    Text('${p.lessons.length} дарс • ${p.quiz.length} савол',
-                        style: const TextStyle(
-                            color: Color(0xFF6A6A6A), fontSize: 11)),
-                  ],
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(p.topic,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 3),
+                      Text('${p.lessons.length} дарс • ${p.quiz.length} савол',
+                          style: const TextStyle(
+                              color: AppColors.textMuted, fontSize: 12)),
+                    ],
+                  ),
                 ),
-              ),
-              const Icon(Icons.arrow_forward_ios,
-                  color: Color(0xFF4A4A4A), size: 14),
-            ],
+                const Icon(Icons.chevron_right, color: Color(0xFF4A4A4A)),
+              ],
+            ),
           ),
         ),
       ),

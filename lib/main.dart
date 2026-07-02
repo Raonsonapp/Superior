@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/splash_screen.dart';
+import 'theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,13 +20,7 @@ class SuperiorApp extends StatelessWidget {
     return MaterialApp(
       title: 'Superior AI',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF0A0A0A),
-        colorScheme: const ColorScheme.dark(
-          primary: Color(0xFF10A37F),
-          surface: Color(0xFF1A1A1A),
-        ),
-      ),
+      theme: AppTheme.dark(),
       home: const SplashScreen(),
     );
   }
